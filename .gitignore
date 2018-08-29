@@ -1,0 +1,15 @@
+*.iml
+.gradle
+/local.properties
+.DS_Store
+build/
+/captures
+.externalNativeBuild
+!build.gradle
+.idea/
+gradle/
+gradle.properties
+*.apk
+.svn
+gradlew
+gradlew.bat
