@@ -7,7 +7,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
-
+<Button
+    android:onClick="test"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:text="Test"
+    />
     <com.test.cropview.GestureView
         android:id="@+id/view"
         android:layout_width="match_parent"
@@ -29,6 +34,27 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@color/top_color2"
+        android:visibility="gone"
         />
-
+    <com.test.cropview.GestureDemoView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/top_color2"
+        />
+    <com.test.cropview.ScaleImageView
+        android:id="@+id/siv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/top_color2"
+        android:visibility="gone"
+        />
+<TextView
+    android:id="@+id/mcv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:text="asdfasdfsf"
+    android:visibility="gone"
+    />
 </LinearLayout>
