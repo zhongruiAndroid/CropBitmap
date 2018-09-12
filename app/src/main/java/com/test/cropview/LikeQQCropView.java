@@ -8,6 +8,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.graphics.Region;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -20,10 +21,10 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
 import com.test.cropview.tool.PhoneUtils;
-
+/***
+ *   created by zhongrui on 2018/9/11
+ */
 public class LikeQQCropView extends View {
-
-
     private float centerX;
     private float centerY;
 
@@ -76,6 +77,12 @@ public class LikeQQCropView extends View {
 
     private Paint paint;
     private Paint bgPaint;
+
+
+    private Region touchRegion;
+    //1:左上角，2右上角，3右下角，4左下角
+    private int touchArea;
+    private int touchLength=10;
 
     //是否可以移动图片(点击图片内部区域才能移动位置)
     private boolean canMoveBitmap;
