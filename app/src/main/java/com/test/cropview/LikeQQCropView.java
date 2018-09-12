@@ -48,7 +48,7 @@ public class LikeQQCropView extends View {
     private Matrix showBitmapMatrix;
     private Paint showBitmapPaint;
     //图片可放大的最大倍数
-    private float maxScale=2.5f;
+    private float maxScale=3f;
     //双击图片放大倍数
     protected float doubleClickScale=1.8f;
     protected float doubleClickX;
@@ -273,7 +273,7 @@ public class LikeQQCropView extends View {
                                             sparseArray.put(1,value);
                                             tempScale=sparseArray.get(1)/sparseArray.get(0);
                                         }
-                                        makeBitmapSmall(tempScale,centerX,centerX);
+                                        zoomBitmap(tempScale,centerX,centerX);
                                         invalidate();
                                     }
                                 });
@@ -359,7 +359,7 @@ public class LikeQQCropView extends View {
                     showBitmapRectF = new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
                     showBitmapMatrix.mapRect(showBitmapRectF);
                 }*/
-                makeBitmapSmall(scaleFactor,detector.getFocusX(),detector.getFocusY());
+                zoomBitmap(scaleFactor,detector.getFocusX(),detector.getFocusY());
                 invalidate();
                 return true;
             }
@@ -375,7 +375,10 @@ public class LikeQQCropView extends View {
             }
         });
     }
-    private void makeBitmapSmall(float scaleFactor,float focusX,float focusY){
+    private void zoomBitmap(float scaleFactor, float focusX, float focusY){
+        if(scaleFactor>1&&getCurrentScale()*scaleFactor>maxScale){
+            scaleFactor=maxScale/getCurrentScale();
+        }
         showBitmapMatrix.postScale(scaleFactor,scaleFactor,focusX,focusY);
 
         showBitmapRectF = new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
