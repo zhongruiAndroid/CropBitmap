@@ -66,13 +66,19 @@ public class LikeQQCropView extends View {
 
     //圆形所在矩阵
     private RectF circleRectF;
+    //只是用来记录初始位置
+    private RectF initCircleRectF;
+    //控制圆形所在矩阵
+    private Matrix circleRectFMatrix;
+
     //包裹圆形可触摸矩阵
-    private RectF scaleRectF;
+    private RectF bigCircleRectF;
 
     //通过path在view中显示出圆形
     private Path circlePath;
 
-    //圆形之外的path
+
+    //圆形之外所有区域
     private Path outsidePath;
 
     private Paint paint;
@@ -82,7 +88,13 @@ public class LikeQQCropView extends View {
     private Region touchRegion;
     //1:左上角，2右上角，3右下角，4左下角
     private int touchArea;
+    //圆形外部可触摸宽度
     private int touchLength=10;
+    //用于放大圆形
+    private Path bigCirclePath;
+
+    //是否可以放大圆形
+    private boolean canZoomCircle;
 
     //是否可以移动图片(点击图片内部区域才能移动位置)
     private boolean canMoveBitmap;
@@ -94,7 +106,7 @@ public class LikeQQCropView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
+        touchRegion=new Region();
         paint=new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(ContextCompat.getColor(getContext(),R.color.colorAccent));
         paint.setStyle(Paint.Style.STROKE);
@@ -118,17 +130,20 @@ public class LikeQQCropView extends View {
         if(showBitmap==null){
             return;
         }
-
+        centerX = getWidth()/2;
+        centerY = getHeight()/2;
         circlePath=new Path();
         outsidePath=new Path();
+        bigCirclePath =new Path();
 
         if(showBitmap.getHeight()<getHeight()&&showBitmap.getWidth()<getWidth()){
+            //如果图片宽高均小于屏幕宽高，只需要计算图片位移到中心的距离
             initScale=1;
             initTranslateX=(getWidth()-showBitmap.getWidth())/2;
             initTranslateY=(getHeight()-showBitmap.getHeight())/2;
 
-
         }else{
+            //如果图片宽(高)大于屏幕宽(高)，需要计算图片缩小倍数和位移到中心的距离
             if(showBitmap.getWidth()*1.0f/showBitmap.getHeight()>getWidth()*1.0f/getHeight()){
                 initScale=getWidth()*1.0f/showBitmap.getWidth();
                 initTranslateX=0;
@@ -140,46 +155,81 @@ public class LikeQQCropView extends View {
             }
         }
 
-        //图片缩放之前的矩阵
+
+        circleRectFMatrix =new Matrix();
+
+        //图片未缩放的矩阵
         showBitmapRectF = new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
         showBitmapMatrix =new Matrix();
         showBitmapMatrix.postScale(initScale,initScale);
         showBitmapMatrix.postTranslate(initTranslateX,initTranslateY);
 
-        //图片缩放之前的矩阵
+        //图片缩放之后的矩阵
         showBitmapMatrix.mapRect(showBitmapRectF);
 
+        //根据图片矩阵获取圆形矩阵
+        circleRectF=getCircleRectFByBitmapRectF(showBitmapRectF);
+//        circlePath.addCircle(centerX, centerY,circleRectFLength/2, Path.Direction.CW);
+        //记录初始化的圆形矩阵
+        initCircleRectF=circleRectF;
+
+
+        refreshPath();
+
+    }
+
+    private void refreshPath() {
+        if(!outsidePath.isEmpty()){
+            outsidePath.reset();
+        }
+        //圆形之外所有区域
+        outsidePath.addRect(new RectF(0,0,getWidth(),getHeight()),Path.Direction.CW);
+
+        if(!circlePath.isEmpty()){
+            circlePath.reset();
+        }
+        //圆形之内所有区域
+        circlePath.addRoundRect(circleRectF,getRectLength(circleRectF)/2,getRectLength(circleRectF)/2, Path.Direction.CW);
+        //获取圆形之外所有区域
+        outsidePath.op(circlePath, Path.Op.XOR);
+
+        this.bigCircleRectF = getBigCircleRectF(circleRectF);
+
+        if(!bigCirclePath.isEmpty()){
+            bigCirclePath.reset();
+        }
+        bigCirclePath.addRoundRect(this.bigCircleRectF,(this.bigCircleRectF.right- this.bigCircleRectF.left)/2,(this.bigCircleRectF.right- this.bigCircleRectF.left)/2, Path.Direction.CW);
+
+        bigCirclePath.op(circlePath,Path.Op.XOR);
+
+        //获取可以触摸放大的区域
+        touchRegion.setPath(bigCirclePath,new Region(0,0,getWidth(),getHeight()));
+    }
+
+    //根据图片缩放之后的矩阵获取圆形裁剪框的矩阵
+    private RectF getCircleRectFByBitmapRectF(RectF showBitmapRectF){
         float rectFW = showBitmapRectF.right - showBitmapRectF.left;
         float rectFH = showBitmapRectF.bottom - showBitmapRectF.top;
-
         //圆形所在矩阵边长
         float circleRectFLength=rectFW>rectFH?rectFH:rectFW;
-
-        centerX = getWidth()/2;
-        centerY = getHeight()/2;
-
         //计算出圆形所在矩阵的left top
         float circleRectFLeft= centerX -circleRectFLength/2;
         float circleRectFTop= centerY -circleRectFLength/2;
         //圆形矩阵
-        circleRectF=new RectF(circleRectFLeft,circleRectFTop,circleRectFLength+circleRectFLeft,circleRectFLength+circleRectFTop);
-
-//            circlePath.addRect(circleRectF, Path.Direction.CW);
-        circlePath.addCircle(centerX, centerY,circleRectFLength/2, Path.Direction.CW);
-
-        outsidePath.addRect(new RectF(0,0,getWidth(),getHeight()),Path.Direction.CW);
-
-        outsidePath.op(circlePath, Path.Op.XOR);
-
-        scaleRectF=new RectF();
-        scaleRectF.set(circleRectF);
-        scaleRectF.left=scaleRectF.left-getDP();
-        scaleRectF.top=scaleRectF.top-getDP();
-        scaleRectF.right=scaleRectF.right+getDP();
-        scaleRectF.bottom=scaleRectF.bottom+getDP();
-
+        return new RectF(circleRectFLeft,circleRectFTop,circleRectFLength+circleRectFLeft,circleRectFLength+circleRectFTop);
     }
-
+    private float getRectLength(RectF rectF){
+        return Math.abs(rectF.right-rectF.left);
+    }
+    private RectF getBigCircleRectF(RectF circleRectF){
+        RectF rectF =new RectF();
+        rectF.set(circleRectF);
+        rectF.left= rectF.left-getTouchAreaWidth();
+        rectF.top= rectF.top-getTouchAreaWidth();
+        rectF.right= rectF.right+getTouchAreaWidth();
+        rectF.bottom= rectF.bottom+getTouchAreaWidth();
+        return rectF;
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -192,15 +242,18 @@ public class LikeQQCropView extends View {
 
         //包含圆形可点击区域矩形
         canvas.drawRect(circleRectF,paint);
+        canvas.drawRect(bigCircleRectF,showBitmapPaint);
         //包含图片矩形
         canvas.drawRect(showBitmapRectF,showBitmapPaint);//
         canvas.drawPath(outsidePath,bgPaint);
 
+        //bigpath
+        canvas.drawPath(bigCirclePath,bgPaint);
+
     }
 
-    public int getDP(){
-        int i = PhoneUtils.dip2px(getContext(), 10);
-        return i;
+    public int getTouchAreaWidth(){
+        return PhoneUtils.dip2px(getContext(), 10);
     }
 
     public float getCurrentScale(){
@@ -212,7 +265,35 @@ public class LikeQQCropView extends View {
         gestureDetector=new GestureDetector(getContext(),new GestureDetector.SimpleOnGestureListener(){
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                if(canMoveBitmap){
+                //通过移动来缩放圆形裁剪框
+                if(canZoomCircle){
+                    //&&getCurrentScale()<maxScale&&getCurrentScale()>minCircleScale
+                    float distance=Math.abs(distanceX)>Math.abs(distanceY)?distanceX:distanceY;
+                    float rectHeight = circleRectF.bottom - circleRectF.top;
+                    float scaleFactory = (-distance*2 + rectHeight) / rectHeight;
+
+                    //圆形裁剪框和bitmap同时缩放处理
+//                    circleRectFMatrix.postScale(scaleFactory,scaleFactory,centerX,centerY);
+
+                    showBitmapMatrix.postScale(scaleFactory,scaleFactory,centerX,centerY);
+
+                    showBitmapRectF = new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
+                    showBitmapMatrix.mapRect(showBitmapRectF);
+
+
+                    circleRectF = new RectF();
+                    circleRectF.set(getCircleRectFByBitmapRectF(showBitmapRectF));
+//                    circleRectFMatrix.mapRect(circleRectF);
+
+                    bigCircleRectF=getBigCircleRectF(circleRectF);
+
+                    refreshPath();
+
+
+                    invalidate();
+                }
+                //移动图片
+                if(canMoveBitmap&&canZoomCircle==false){
                     //从左往右滑动图片(防止图片滑出裁剪框外)
                     if(distanceX<0){
                         float rectDistance=circleRectF.left-showBitmapRectF.left;
@@ -423,11 +504,17 @@ public class LikeQQCropView extends View {
             case MotionEvent.ACTION_DOWN:
                 if(showBitmapRectF.contains(event.getX(),event.getY())){
                     canMoveBitmap=true;
+                }
+                if(touchRegion.contains((int)event.getX(),(int)event.getY())){
+                    canZoomCircle=true;
+                    Log("=touchRegion=="+true);
                 }else{
+                    Log("=touchRegion=="+false);
                 }
             break;
             case MotionEvent.ACTION_UP:
                 canMoveBitmap=false;
+                canZoomCircle=false;
             break;
         }
         return true;
