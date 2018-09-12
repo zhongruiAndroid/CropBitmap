@@ -1,5 +1,6 @@
 package com.test.cropview;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -11,9 +12,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 
 import com.test.cropview.tool.PhoneUtils;
 
@@ -43,10 +47,18 @@ public class LikeQQCropView extends View {
     //控制图片绘制的矩阵
     private Matrix showBitmapMatrix;
     private Paint showBitmapPaint;
+    //图片可放大的最大倍数
+    private float maxScale=2.5f;
+    //双击图片放大倍数
+    protected float doubleClickScale=1.8f;
+    protected float doubleClickX;
+    protected float doubleClickY;
 
 
+    //随着圆形区域的变小而变小,用来限制圆形的缩小倍数
+    private float minCircleScale=1f;
     //初始化图片缩放和平移，保证图片在view中心显示
-    private float initScale=1;
+    private float initScale=1f;
     private float initTranslateX;
     private float initTranslateY;
 
@@ -69,7 +81,8 @@ public class LikeQQCropView extends View {
     private boolean canMoveBitmap;
 
     private GestureDetector gestureDetector;
-
+    private ScaleGestureDetector scaleGestureDetector;
+    private ValueAnimator valueAnimator;
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -183,12 +196,16 @@ public class LikeQQCropView extends View {
         return i;
     }
 
+    public float getCurrentScale(){
+        float[]temp=new float[9];
+        showBitmapMatrix.getValues(temp);
+        return temp[Matrix.MSCALE_X];
+    }
     private void initGesture() {
         gestureDetector=new GestureDetector(getContext(),new GestureDetector.SimpleOnGestureListener(){
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 if(canMoveBitmap){
-
                     //从左往右滑动图片(防止图片滑出裁剪框外)
                     if(distanceX<0){
                         float rectDistance=circleRectF.left-showBitmapRectF.left;
@@ -228,18 +245,175 @@ public class LikeQQCropView extends View {
                 }
                 return true;
             }
+
+            @Override
+            public boolean onDoubleTapEvent(MotionEvent e) {
+                switch (e.getAction()){
+                    case MotionEvent.ACTION_UP:
+                        if(showBitmapRectF.contains(e.getX(),e.getY())){
+                            if(getCurrentScale()>initScale){
+                                //用于双击图片放大缩小,获取动画间隔缩放系数
+                                final SparseArray<Float> sparseArray=new SparseArray<>();
+                                sparseArray.put(0,-1f);
+                                sparseArray.put(1,-1f);
+                                valueAnimator=ValueAnimator.ofFloat(getCurrentScale(),initScale);
+                                Log(initScale+"==="+initScale);
+                                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                    @Override
+                                    public void onAnimationUpdate(ValueAnimator animation) {
+                                        float value = (float) animation.getAnimatedValue();
+                                        float tempScale=1;
+                                        if(sparseArray.get(0)==-1&&sparseArray.get(1)==-1){
+                                            sparseArray.put(0,value);
+                                        }else if(sparseArray.get(1)==-1){
+                                            sparseArray.put(1,value);
+                                            tempScale=sparseArray.get(1)/sparseArray.get(0);
+                                        }else{
+                                            sparseArray.put(0,sparseArray.get(1));
+                                            sparseArray.put(1,value);
+                                            tempScale=sparseArray.get(1)/sparseArray.get(0);
+                                        }
+                                        makeBitmapSmall(tempScale,centerX,centerX);
+                                        invalidate();
+                                    }
+                                });
+                                valueAnimator.setInterpolator(new DecelerateInterpolator());
+                                valueAnimator.setDuration(300);
+                                valueAnimator.start();
+                            }else{
+                                doubleClickX=e.getX();
+                                doubleClickY=e.getY();
+                                //用于双击图片放大缩小,获取动画间隔缩放系数
+                                final SparseArray<Float> sparseArray=new SparseArray<>();
+                                sparseArray.put(0,-1f);
+                                sparseArray.put(1,-1f);
+                                valueAnimator=ValueAnimator.ofFloat(getCurrentScale(),doubleClickScale);
+                                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                    @Override
+                                    public void onAnimationUpdate(ValueAnimator animation) {
+                                        float value = (float) animation.getAnimatedValue();
+                                        float tempScale=1;
+                                        if(sparseArray.get(0)==-1&&sparseArray.get(1)==-1){
+                                            sparseArray.put(0,value);
+                                        }else if(sparseArray.get(1)==-1){
+                                            sparseArray.put(1,value);
+                                            tempScale=sparseArray.get(1)/sparseArray.get(0);
+                                        }else{
+                                            sparseArray.put(0,sparseArray.get(1));
+                                            sparseArray.put(1,value);
+                                            tempScale=sparseArray.get(1)/sparseArray.get(0);
+                                        }
+                                        showBitmapMatrix.postScale(tempScale,tempScale,doubleClickX,doubleClickY);
+                                        showBitmapRectF = new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
+                                        showBitmapMatrix.mapRect(showBitmapRectF);
+                                        invalidate();
+
+                                    }
+                                });
+                                valueAnimator.setInterpolator(new DecelerateInterpolator());
+                                valueAnimator.setDuration(300);
+                                valueAnimator.start();
+                            }
+                        }
+
+                        break;
+                }
+                return super.onDoubleTapEvent(e);
+            }
         });
+        scaleGestureDetector=new ScaleGestureDetector(getContext(),new ScaleGestureDetector.SimpleOnScaleGestureListener(){
+            @Override
+            public boolean onScale(ScaleGestureDetector detector) {
+                float currentScale = getCurrentScale();
+                float scaleFactor = detector.getScaleFactor();
+
+                //防止过度缩小
+                if(currentScale*scaleFactor<initScale){
+                    scaleFactor=initScale/currentScale;
+                }
+
+                /*showBitmapMatrix.postScale(scaleFactor,scaleFactor,detector.getFocusX(),detector.getFocusY());
+
+                showBitmapRectF = new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
+                showBitmapMatrix.mapRect(showBitmapRectF);
+
+
+                //如果缩小需要检查圆形框是否包含图片，如果不包含，缩小之后需要平移
+                if(scaleFactor<1){
+                    float leftLength = showBitmapRectF.left - circleRectF.left;
+                    if(leftLength>0){
+                        showBitmapMatrix.postTranslate(-leftLength,0);
+                    }
+                    float topLength = showBitmapRectF.top - circleRectF.top;
+                    if(topLength>0){
+                        showBitmapMatrix.postTranslate(0,-topLength);
+                    }
+                    float rightLength = circleRectF.right-showBitmapRectF.right ;
+                    if(rightLength>0){
+                        showBitmapMatrix.postTranslate(rightLength,0);
+                    }
+                    float bottomLength = circleRectF.bottom-showBitmapRectF.bottom ;
+                    if(bottomLength>0){
+                        showBitmapMatrix.postTranslate(0,bottomLength);
+                    }
+                    showBitmapRectF = new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
+                    showBitmapMatrix.mapRect(showBitmapRectF);
+                }*/
+                makeBitmapSmall(scaleFactor,detector.getFocusX(),detector.getFocusY());
+                invalidate();
+                return true;
+            }
+
+            @Override
+            public boolean onScaleBegin(ScaleGestureDetector detector) {
+                //如果缩放中心在图片范围内就可以缩放
+                if(showBitmapRectF.contains(detector.getFocusX(),detector.getFocusY())){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        });
+    }
+    private void makeBitmapSmall(float scaleFactor,float focusX,float focusY){
+        showBitmapMatrix.postScale(scaleFactor,scaleFactor,focusX,focusY);
+
+        showBitmapRectF = new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
+        showBitmapMatrix.mapRect(showBitmapRectF);
+
+
+        //如果缩小需要检查圆形框是否包含图片，如果不包含，缩小之后需要平移
+        if(scaleFactor<1){//小于1缩小动作，大于1放大动作
+            float leftLength = showBitmapRectF.left - circleRectF.left;
+            if(leftLength>0){
+                showBitmapMatrix.postTranslate(-leftLength,0);
+            }
+            float topLength = showBitmapRectF.top - circleRectF.top;
+            if(topLength>0){
+                showBitmapMatrix.postTranslate(0,-topLength);
+            }
+            float rightLength = circleRectF.right-showBitmapRectF.right ;
+            if(rightLength>0){
+                showBitmapMatrix.postTranslate(rightLength,0);
+            }
+            float bottomLength = circleRectF.bottom-showBitmapRectF.bottom ;
+            if(bottomLength>0){
+                showBitmapMatrix.postTranslate(0,bottomLength);
+            }
+            showBitmapRectF = new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
+            showBitmapMatrix.mapRect(showBitmapRectF);
+        }
+
     }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        scaleGestureDetector.onTouchEvent(event);
         gestureDetector.onTouchEvent(event);
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
                 if(showBitmapRectF.contains(event.getX(),event.getY())){
                     canMoveBitmap=true;
-                    Log("===true");
                 }else{
-                    Log("===false");
                 }
             break;
             case MotionEvent.ACTION_UP:
