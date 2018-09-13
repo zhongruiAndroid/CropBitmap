@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //setBitmapForWidth()
         //setBitmapForScale()
 
+        //likeView.setBitmapForWidth(R.drawable.bird,1080);
         likeView.setBitmap(bitmap);
 
 
