@@ -25,10 +25,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initView();
     }
-
     private void initView() {
         likeView=findViewById(R.id.likeView);
         sb=findViewById(R.id.sb);
