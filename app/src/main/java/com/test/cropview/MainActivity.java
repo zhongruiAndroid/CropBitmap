@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 //动态改变裁剪框圆角
-                float cropWidth = likeView.getCropWidth() / 2;
+                float cropWidth = likeView.getClipWidth() / 2;
                 float newRadius = progress * 1f / sb.getMax() * cropWidth;
                 likeView.setRadius(newRadius);
                 likeView.setMaskColor(1);
