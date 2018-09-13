@@ -68,5 +68,6 @@ likeView.getClipWidth();
 <br/>
 
 ```gradle
+
 implementation 'com.github:MyCropBitmap:正在提交jcenter,还在审核'
 ```
