@@ -4,7 +4,7 @@
 
 | 属性           | 类型      | 说明                                                                  |
 |----------------|-----------|-----------------------------------------------------------------------|
-| maskColor      | color | 遮罩层颜色                                |
+| maskColor      | color | 遮罩层颜色(默认#60000000)                                |
 | borderColor     | color | 裁剪框内部边框颜色(默认白色)                               |
 | radius        | dimension     | 裁剪框圆角(默认为最大值，裁剪框高度的一半)                                                        |
 | maxScale    | float     | 图片最大放大倍数(默认3)                                                      |
@@ -45,6 +45,8 @@ likeView.setRadius(radius);
 likeView.setMaxScale(1);
 /**设置双击图片放大倍数*/
 likeView.setDoubleClickScale(1);
+/**获取裁剪框宽度*/
+likeView.getClipWidth();
 ```
 
 <br/>
