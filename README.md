@@ -1,8 +1,11 @@
 # 仿QQ头像裁剪  
-
+  
+    
 
 ![github](https://github.com/zhongruiAndroid/CropBitmap/blob/master/app/src/main/res/drawable/clipbitmap2.gif "github")  
 
+## [Demo.apk下载](https://github.com/zhongruiAndroid/CropBitmap/blob/master/app/sampledata/app.apk "apk文件")
+    
 
 | 属性           | 类型      | 说明                                                                  |
 |----------------|-----------|-----------------------------------------------------------------------|
@@ -11,6 +14,9 @@
 | radius        | dimension     | 裁剪框圆角(默认为最大值，裁剪框高度的一半)                                                        |
 | maxScale    | float     | 图片最大放大倍数(默认3)                                                      |
 | doubleClickScale    | float | 双击图片放大倍数(默认1.8,最大值不超过maxScale)
+
+  
+  
 
 
 #### 设置Bitmap
