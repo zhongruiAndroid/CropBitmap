@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LikeQQCropView">
+        <!--遮罩颜色-->
+        <attr name="maskColor" format="color"></attr>
+        <attr name="borderColor" format="color"></attr>
+        <attr name="radius" format="dimension"></attr>
+        <attr name="maxScale" format="float"></attr>
+        <attr name="doubleClickScale" format="float"></attr>
+    </declare-styleable>
+</resources>

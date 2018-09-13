@@ -1,122 +1,109 @@
 package com.test.cropview;
 
 import android.content.Intent;
-import android.graphics.drawable.PaintDrawable;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.PopupWindow;
+import android.widget.Button;
+import android.widget.SeekBar;
 
-public class MainActivity extends AppCompatActivity {
-    GestureView gestureView;
-    private GestureDetector gestureDetector;
-    private View mcv;
-    private ScaleImageView siv;
-    private String TAG="==";
-    private ScaleGestureDetector scaleGestureDetector;
+import com.github.cropbitmap.BitmapUtils;
+import com.github.cropbitmap.LikeQQCropView;
 
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+
+    private LikeQQCropView likeView;
+    SeekBar sb;
+    Button btHorizontalFlip;
+    Button btVerticalFlip;
+    Button btBoth;
+    Button btReset;
+    Button btClip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mcv = findViewById(R.id.mcv);
-        mcv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                a();
-            }
-        });
 
-        siv = findViewById(R.id.siv);
         initView();
     }
-    public void test(View view){
-        startActivity(new Intent(this,TestActivity.class));
-    }
-    public void a( ){
-        Log.i("==","=aa==");
-        View v= LayoutInflater.from(this).inflate(R.layout.a,null);
-        PopupWindow popupWindow=new PopupWindow(v, ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT,false);
-        popupWindow.setFocusable(true);
-        popupWindow.setBackgroundDrawable(new PaintDrawable());
-        popupWindow.showAtLocation(mcv,Gravity.CENTER,0,0);
-    }
+
     private void initView() {
-        scaleGestureDetector = new ScaleGestureDetector(this, new ScaleGestureDetector.OnScaleGestureListener() {
-            @Override
-            public boolean onScale(ScaleGestureDetector detector) {
-//                Log.i("===","===onScale");
-                Log.i(TAG +"===",detector.getScaleFactor()+"==="+detector.getFocusX()+"==="+detector.getFocusY()+"=="+detector.getPreviousSpan()+"=="+detector.getCurrentSpan());
-                return false;
-            }
+        likeView=findViewById(R.id.likeView);
+        sb=findViewById(R.id.sb);
 
-            @Override
-            public boolean onScaleBegin(ScaleGestureDetector detector) {
-//                Log.i(TAG +"===",detector.getScaleFactor()+"==="+detector.getFocusX()+"==="+detector.getFocusY()+"=="+detector.getPreviousSpan()+"=="+detector.getCurrentSpan());
-                return true;
-            }
-            @Override
-            public void onScaleEnd(ScaleGestureDetector detector) {
-                Log.i(TAG+"===","===onScaleEnd");
-            }
-        });
-        siv.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                scaleGestureDetector.onTouchEvent(event);
-                return true;
-            }
-        });
+        btHorizontalFlip=findViewById(R.id.btHorizontalFlip);
+        btHorizontalFlip.setOnClickListener(this);
 
-        gestureDetector = new GestureDetector(this,new GestureDetector.SimpleOnGestureListener(){
-            @Override
-            public boolean onDown(MotionEvent e) {
-                Log.i("===","===onDown");
-                return true;
-            }
+        btVerticalFlip=findViewById(R.id.btVerticalFlip);
+        btVerticalFlip.setOnClickListener(this);
 
-            @Override
-            public void onLongPress(MotionEvent e) {
-                Log.i("===","===onLongPress====");
-                super.onLongPress(e);
-            }
+        btBoth=findViewById(R.id.btBoth);
+        btBoth.setOnClickListener(this);
 
-            @Override
-            public void onShowPress(MotionEvent e) {
-                Log.i("===","===onShowPress====");
-                super.onShowPress(e);
-            }
+        btReset=findViewById(R.id.btReset);
+        btReset.setOnClickListener(this);
 
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                Log.i("===","==="+distanceX+"===="+distanceY);
-                return super.onScroll(e1, e2, distanceX, distanceY);
-            }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                Log.i("===","===onFling"+velocityX+"=="+velocityY);
-                return super.onFling(e1, e2, velocityX, velocityY);
-            }
-        } );
-
-        gestureView=findViewById(R.id.view);
+        btClip=findViewById(R.id.btClip);
+        btClip.setOnClickListener(this);
 
 
-        gestureView.setOnTouchListener(new View.OnTouchListener() {
+
+
+        //压缩bitmap宽度至1080
+        Bitmap bitmap = BitmapUtils.compressBitmapForWidth(this, R.drawable.bird, 1080);
+        //如果你通过储存路径从手机相册直接获取图片(未压缩)，在保证bitmap不会oom的情况下，可以直接调用setBitmap方法
+        //否则乖乖调用  以下方法(这些方法可以防止OOM)
+        //setBitmap(多参)
+        //setBitmapForHeight()
+        //setBitmapForWidth()
+        //setBitmapForScale()
+
+        likeView.setBitmap(bitmap);
+
+
+        sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                //动态改变裁剪框圆角
+                float cropWidth = likeView.getCropWidth() / 2;
+                float newRadius = progress * 1f / sb.getMax() * cropWidth;
+                likeView.setRadius(newRadius);
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-
+    }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btHorizontalFlip:
+                //水平翻转
+                likeView.horizontalFlip();
+            break;
+            case R.id.btVerticalFlip:
+                //垂直翻转
+                likeView.verticalFlip();
+            break;
+            case R.id.btBoth:
+                //垂直水平翻转
+                likeView.verticalAndHorizontalFlip();
+            break;
+            case R.id.btReset:
+                //重置图片位置
+                likeView.reset();
+            break;
+            case R.id.btClip:
+                //裁剪
+                TestBean.bitmap=likeView.clip();
+                Intent intent = new Intent(this, TestActivity.class);
+                startActivity(intent);
+            break;
+        }
     }
 }

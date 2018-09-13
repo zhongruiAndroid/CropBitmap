@@ -5,56 +5,89 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
-<Button
-    android:onClick="test"
-    android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:text="Test"
-    />
-    <com.test.cropview.GestureView
-        android:id="@+id/view"
+    android:orientation="vertical">
+
+    <com.github.cropbitmap.LikeQQCropView
+        android:id="@+id/likeView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/top_color2"
-        android:visibility="gone"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/white"
         />
 
-    <com.test.cropview.FailingBall
+    <SeekBar
+        android:id="@+id/sb"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/top_color2"
-        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#87ceeb"
+        android:max="100"
+        android:progress="100"
+        android:progressTint="#87ceeb"
+        android:thumbTint="#87ceeb"
         />
 
-    <com.test.cropview.MoveCircleView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/top_color2"
-        android:visibility="gone"
-        />
-    <com.test.cropview.GestureDemoView
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/btHorizontalFlip"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="fanzhuan1"
+            android:text="水平翻转"
+            />
+
+        <Button
+            android:id="@+id/btVerticalFlip"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="fanzhuan2"
+            android:text="垂直翻转"
+            />
+
+        <Button
+            android:id="@+id/btBoth"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="fanzhuan3"
+            android:text="水平垂直翻转"
+            />
+
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/top_color2"
-        />
-    <com.test.cropview.ScaleImageView
-        android:id="@+id/siv"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/top_color2"
-        android:visibility="gone"
-        />
-<TextView
-    android:id="@+id/mcv"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:text="asdfasdfsf"
-    android:visibility="gone"
-    />
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        >
+        <Button
+            android:id="@+id/btReset"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="reset"
+            android:text="还原"
+            />
+
+        <Button
+            android:id="@+id/btClip"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="clip"
+            android:text="裁剪"
+            />
+    </LinearLayout>
 </LinearLayout>

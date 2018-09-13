@@ -13,3 +13,5 @@ gradle.properties
 .svn
 gradlew
 gradlew.bat
+.test/
+output.json
