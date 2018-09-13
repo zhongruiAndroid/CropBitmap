@@ -77,11 +77,14 @@ likeView.getClipWidth();
 ```
 
 <br/>
-
-
 <br/>
 
-```gradle
+| 版本号 | [ ![Download](https://api.bintray.com/packages/zhongrui/mylibrary/CropBitmap/images/download.svg) ](https://bintray.com/zhongrui/mylibrary/CropBitmap/_latestVersion) |
+|--------|----|
+  
 
-implementation 'com.github:MyCropBitmap:正在提交jcenter,还在审核'
+
+
+```gradle
+implementation 'com.github:MyCropBitmap:版本号看上面'
 ```
