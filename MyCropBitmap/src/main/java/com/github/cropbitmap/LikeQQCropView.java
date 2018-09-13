@@ -105,7 +105,7 @@ public class LikeQQCropView extends View {
     private ValueAnimator valueAnimator;
 
 
-    private float radius;
+    private float radius=-1;
     private int maskColor;
     private int borderColor;
 
@@ -113,7 +113,7 @@ public class LikeQQCropView extends View {
     public float getRadius() {
         return radius;
     }
-    public float getCropWidth() {
+    public float getClipWidth() {
         return getRectLength(circleRectF);
     }
 
