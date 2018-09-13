@@ -1,4 +1,7 @@
-# 仿QQ头像裁剪
+# 仿QQ头像裁剪  
+
+
+![github](https://github.com/zhongruiAndroid/CropBitmap/blob/master/app/src/main/res/drawable/clipbitmap2.gif "github")  
 
 
 | 属性           | 类型      | 说明                                                                  |
