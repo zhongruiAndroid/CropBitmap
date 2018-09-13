@@ -68,10 +68,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 float cropWidth = likeView.getClipWidth() / 2;
                 float newRadius = progress * 1f / sb.getMax() * cropWidth;
                 likeView.setRadius(newRadius);
-                likeView.setMaskColor(1);
-                likeView.setBorderColor(1);
-                likeView.setMaxScale(1);
-                likeView.setDoubleClickScale(1);
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
