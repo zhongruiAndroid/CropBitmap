@@ -27,12 +27,17 @@ LikeQQCropView likeView=findViewById(R.id.likeView);
 likeView.setBitmap(Bitmap bitmap);
 
 //以下方法很安全,做了防止OOM的压缩
+
+/**设置压缩之后的宽和高*/
 likeView.setBitmap(多参);
 
+/**设置压缩之后的高度,宽度自适应*/
 likeView.setBitmapForHeight(多参);
 
+/**设置压缩之后的宽度,高度自适应*/
 likeView.setBitmapForWidth(多参);
 
+/**设置压缩的缩放倍数(偶数),图片缩小一半传2,缩小4倍传4*/
 likeView.setBitmapForScale(多参);
 ```
 #### 对Bitmap的操作
