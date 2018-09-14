@@ -31,10 +31,10 @@ likeView.setBitmap(Bitmap bitmap);
 /**设置压缩之后的宽和高*/
 likeView.setBitmap(多参);
 
-/**设置压缩之后的高度,宽度自适应*/
+/**设置压缩之后的高度(宽度自适应)*/
 likeView.setBitmapForHeight(多参);
 
-/**设置压缩之后的宽度,高度自适应*/
+/**设置压缩之后的宽度(高度自适应)*/
 likeView.setBitmapForWidth(多参);
 
 /**设置压缩的缩放倍数(偶数),图片缩小一半传2,缩小4倍传4*/
