@@ -1,5 +1,9 @@
+| 如果有bug请用最新版本 | [ ![Download](https://api.bintray.com/packages/zhongrui/mylibrary/CropBitmap/images/download.svg) ](https://bintray.com/zhongrui/mylibrary/CropBitmap/_latestVersion) |
+|--------|----|
 # 仿QQ头像裁剪  
-  
+ 
+
+   
     
 
 ![github](https://github.com/zhongruiAndroid/CropBitmap/blob/master/app/src/main/res/drawable/clipbitmap2.gif "github")  
@@ -31,10 +35,10 @@ likeView.setBitmap(Bitmap bitmap);
 /**设置压缩之后的宽和高*/
 likeView.setBitmap(多参);
 
-/**设置压缩之后的高度(宽度自适应)*/
+/**[推荐该方法]设置压缩之后的高度(宽度自适应)*/
 likeView.setBitmapForHeight(多参);
 
-/**设置压缩之后的宽度(高度自适应)*/
+/**[推荐该方法]设置压缩之后的宽度(高度自适应)*/
 likeView.setBitmapForWidth(多参);
 
 /**设置压缩的缩放倍数(偶数),图片缩小一半传2,缩小4倍传4*/
@@ -79,7 +83,7 @@ likeView.getClipWidth();
 <br/>
 <br/>
 
-| 版本号 | [ ![Download](https://api.bintray.com/packages/zhongrui/mylibrary/CropBitmap/images/download.svg) ](https://bintray.com/zhongrui/mylibrary/CropBitmap/_latestVersion) |
+| 最新版本号 | [ ![Download](https://api.bintray.com/packages/zhongrui/mylibrary/CropBitmap/images/download.svg) ](https://bintray.com/zhongrui/mylibrary/CropBitmap/_latestVersion) |
 |--------|----|
   
 
