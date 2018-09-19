@@ -1,7 +1,6 @@
 package com.test.cropview;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.widget.Button;
 import android.widget.SeekBar;
 
 import com.github.cropbitmap.LikeQQCropView;
-import com.github.cropbitmap.LikeQQCropViewUtils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -49,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         //压缩bitmap宽度至1080
-        Bitmap bitmap = LikeQQCropViewUtils.compressBitmapForWidth(this, R.drawable.bird, 1080);
+//        Bitmap bitmap = LikeQQCropViewUtils.compressBitmapForWidth(this, R.drawable.bird, 1080);
         //如果你通过储存路径从手机相册直接获取图片(未压缩)，在保证bitmap不会oom的情况下，可以直接调用setBitmap方法
         //否则乖乖调用  以下方法(这些方法可以防止OOM)
         //setBitmap(多参)
@@ -57,8 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //setBitmapForWidth()
         //setBitmapForScale()
 
-        //likeView.setBitmapForWidth(R.drawable.bird,1080);
-        likeView.setBitmap(bitmap);
+        likeView.setBitmapForWidth(R.drawable.bird,1080);
+//        likeView.setBitmap(bitmap);
 
 
 
