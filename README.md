@@ -67,10 +67,10 @@ likeView.setBorderColor(color);
 likeView.setRadius(radius);
 
 /**设置图片最大放大倍数*/
-likeView.setMaxScale(1);
+likeView.setMaxScale(3);
 
 /**设置双击图片放大倍数*/
-likeView.setDoubleClickScale(1);
+likeView.setDoubleClickScale(1.8);
 
 /**获取裁剪框宽度*/
 likeView.getClipWidth();
