@@ -12,7 +12,7 @@ import android.util.TypedValue;
 import java.io.FileDescriptor;
 import java.io.InputStream;
 
-public class BitmapUtils {
+public class LikeQQCropViewUtils {
 
     /*******************************************************************************************************/
     /**

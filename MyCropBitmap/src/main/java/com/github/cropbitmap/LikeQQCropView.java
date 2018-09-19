@@ -119,8 +119,14 @@ public class LikeQQCropView extends View {
 
     public LikeQQCropView setRadius(float radius) {
         this.radius = radius;
-        refreshPath();
-        invalidate();
+        post(new Runnable() {
+            @Override
+            public void run() {
+                refreshPath();
+                invalidate();
+            }
+        });
+
         return this;
     }
 
@@ -130,8 +136,13 @@ public class LikeQQCropView extends View {
 
     public LikeQQCropView setMaskColor(@ColorInt int maskColor) {
         this.maskColor = maskColor;
-        refreshPaint();
-        invalidate();
+        post(new Runnable() {
+            @Override
+            public void run() {
+                refreshPaint();
+                invalidate();
+            }
+        });
         return this;
     }
 
@@ -141,8 +152,13 @@ public class LikeQQCropView extends View {
 
     public LikeQQCropView setBorderColor(@ColorInt int borderColor) {
         this.borderColor = borderColor;
-        refreshPaint();
-        invalidate();
+        post(new Runnable() {
+            @Override
+            public void run() {
+                refreshPaint();
+                invalidate();
+            }
+        });
         return this;
     }
 
@@ -176,7 +192,7 @@ public class LikeQQCropView extends View {
         return this;
     }
 
-
+    private boolean sizeChanged;
     public LikeQQCropView(Context context) {
         super(context);
         initGesture();
@@ -269,6 +285,7 @@ public class LikeQQCropView extends View {
         showBitmapPaint.setStyle(Paint.Style.STROKE);
         showBitmapPaint.setStrokeWidth(2);
         init();
+        sizeChanged=true;
     }
 
     private void init() {
@@ -366,6 +383,9 @@ public class LikeQQCropView extends View {
         touchRegion.setPath(bigCirclePath,new Region(0,0,getWidth(),getHeight()));
     }
     public Bitmap clip(){
+        if(sizeChanged==false){
+            return null;
+        }
         Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);
 
         Matrix matrix=new Matrix();
@@ -415,23 +435,39 @@ public class LikeQQCropView extends View {
         return newBitmap;
     }
     public void horizontalFlip(){
-        showBitmapMatrix.postScale(-1,1,centerX,centerY);
-        showBitmapRectF = new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
-        showBitmapMatrix.mapRect(showBitmapRectF);
-        invalidate();
+        post(new Runnable() {
+            @Override
+            public void run() {
+                showBitmapMatrix.postScale(-1,1,centerX,centerY);
+                showBitmapRectF = new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
+                showBitmapMatrix.mapRect(showBitmapRectF);
+                invalidate();
+            }
+        });
     }
     public void verticalFlip(){
-        showBitmapMatrix.postScale(1,-1,centerX,centerY);
-        showBitmapRectF = new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
-        showBitmapMatrix.mapRect(showBitmapRectF);
-        invalidate();
+        post(new Runnable() {
+            @Override
+            public void run() {
+                showBitmapMatrix.postScale(1,-1,centerX,centerY);
+                showBitmapRectF = new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
+                showBitmapMatrix.mapRect(showBitmapRectF);
+                invalidate();
+            }
+        });
+
     }
     public void verticalAndHorizontalFlip(){
+        post(new Runnable() {
+            @Override
+            public void run() {
+                showBitmapMatrix.postScale(-1,-1,centerX,centerY);
+                showBitmapRectF = new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
+                showBitmapMatrix.mapRect(showBitmapRectF);
 
-        showBitmapMatrix.postScale(-1,-1,centerX,centerY);
-        showBitmapRectF = new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
-        showBitmapMatrix.mapRect(showBitmapRectF);
-        invalidate();
+                invalidate();
+            }
+        });
     }
     public void reset(){
         init();
@@ -770,27 +806,27 @@ public class LikeQQCropView extends View {
     }
     /*******************************************************************************************************/
     public LikeQQCropView setBitmap(int resId, int reqWidth, int reqHeight) {
-        showBitmap=BitmapUtils.compressBitmap(getContext(),resId,reqWidth,reqHeight);
+        showBitmap= LikeQQCropViewUtils.compressBitmap(getContext(),resId,reqWidth,reqHeight);
         return this;
     }
     public LikeQQCropView setBitmap(String pathName, int reqWidth, int reqHeight) {
-        showBitmap=BitmapUtils.compressBitmap(pathName,reqWidth,reqHeight);
+        showBitmap= LikeQQCropViewUtils.compressBitmap(pathName,reqWidth,reqHeight);
         return this;
     }
     public LikeQQCropView setBitmap(byte[] data, int offset, int length, int reqWidth, int reqHeight) {
-        showBitmap=BitmapUtils.compressBitmap(data,offset,length,reqWidth,reqHeight);
+        showBitmap= LikeQQCropViewUtils.compressBitmap(data,offset,length,reqWidth,reqHeight);
         return this;
     }
     public LikeQQCropView setBitmap(FileDescriptor fd, Rect outPadding, int reqWidth, int reqHeight) {
-        showBitmap=BitmapUtils.compressBitmap(fd,outPadding,reqWidth,reqHeight);
+        showBitmap= LikeQQCropViewUtils.compressBitmap(fd,outPadding,reqWidth,reqHeight);
         return this;
     }
     public LikeQQCropView setBitmap(Resources res, TypedValue value, InputStream is, Rect pad, int reqWidth, int reqHeight) {
-        showBitmap=BitmapUtils.compressBitmap(res,value,is,pad,reqWidth,reqHeight);
+        showBitmap= LikeQQCropViewUtils.compressBitmap(res,value,is,pad,reqWidth,reqHeight);
         return this;
     }
     public LikeQQCropView setBitmap(InputStream is, Rect outPadding, int reqWidth, int reqHeight) {
-        showBitmap=BitmapUtils.compressBitmap(is,outPadding,reqWidth,reqHeight);
+        showBitmap= LikeQQCropViewUtils.compressBitmap(is,outPadding,reqWidth,reqHeight);
         return this;
     }
     /*******************************************************************************************************/
@@ -798,27 +834,27 @@ public class LikeQQCropView extends View {
 
     /*******************************************************************************************************/
     public LikeQQCropView setBitmapForHeight(int resId,int reqHeight) {
-        showBitmap=BitmapUtils.compressBitmapForHeight(getContext(),resId,reqHeight);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForHeight(getContext(),resId,reqHeight);
         return this;
     }
     public LikeQQCropView setBitmapForHeight(String pathName,int reqHeight) {
-        showBitmap=BitmapUtils.compressBitmapForHeight(pathName,reqHeight);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForHeight(pathName,reqHeight);
         return this;
     }
     public LikeQQCropView setBitmapForHeight(byte[] data, int offset, int length,int reqHeight) {
-        showBitmap=BitmapUtils.compressBitmapForHeight(data,offset,length,reqHeight);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForHeight(data,offset,length,reqHeight);
         return this;
     }
     public LikeQQCropView setBitmapForHeight(FileDescriptor fd, Rect outPadding,int reqHeight) {
-        showBitmap=BitmapUtils.compressBitmapForHeight(fd,outPadding,reqHeight);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForHeight(fd,outPadding,reqHeight);
         return this;
     }
     public LikeQQCropView setBitmapForHeight(Resources res, TypedValue value,InputStream is, Rect pad,int reqHeight) {
-        showBitmap=BitmapUtils.compressBitmapForHeight(res,value,is,pad,reqHeight);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForHeight(res,value,is,pad,reqHeight);
         return this;
     }
     public LikeQQCropView setBitmapForHeight(InputStream is, Rect outPadding,int reqHeight) {
-        showBitmap=BitmapUtils.compressBitmapForHeight(is,outPadding,reqHeight);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForHeight(is,outPadding,reqHeight);
         return this;
     }
     /*******************************************************************************************************/
@@ -826,27 +862,27 @@ public class LikeQQCropView extends View {
 
     /*******************************************************************************************************/
     public LikeQQCropView setBitmapForWidth( int resId, int reqWidth) {
-        showBitmap=BitmapUtils.compressBitmapForWidth(getContext(),resId,reqWidth);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForWidth(getContext(),resId,reqWidth);
         return this;
     }
     public LikeQQCropView setBitmapForWidth(String pathName, int reqWidth) {
-        showBitmap=BitmapUtils.compressBitmapForWidth(pathName,reqWidth);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForWidth(pathName,reqWidth);
         return this;
     }
     public LikeQQCropView setBitmapForWidth(byte[] data, int offset, int length, int reqWidth) {
-        showBitmap=BitmapUtils.compressBitmapForWidth(data,offset,length,reqWidth);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForWidth(data,offset,length,reqWidth);
         return this;
     }
     public LikeQQCropView setBitmapForWidth(FileDescriptor fd, Rect outPadding, int reqWidth) {
-        showBitmap=BitmapUtils.compressBitmapForWidth(fd,outPadding,reqWidth);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForWidth(fd,outPadding,reqWidth);
         return this;
     }
     public LikeQQCropView setBitmapForWidth(Resources res, TypedValue value,InputStream is, Rect pad, int reqWidth) {
-        showBitmap=BitmapUtils.compressBitmapForWidth(res,value,is,pad,reqWidth);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForWidth(res,value,is,pad,reqWidth);
         return this;
     }
     public LikeQQCropView setBitmapForWidth(InputStream is, Rect outPadding, int reqWidth) {
-        showBitmap=BitmapUtils.compressBitmapForWidth(is,outPadding,reqWidth);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForWidth(is,outPadding,reqWidth);
         return this;
     }
     /*******************************************************************************************************/
@@ -854,27 +890,27 @@ public class LikeQQCropView extends View {
 
     /*******************************************************************************************************/
     public LikeQQCropView setBitmapForScale(int resId,int scaleSize) {
-        showBitmap=BitmapUtils.compressBitmapForScale(getContext(),resId,scaleSize);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForScale(getContext(),resId,scaleSize);
         return this;
     }
     public LikeQQCropView setBitmapForScale(String pathName,int scaleSize) {
-        showBitmap=BitmapUtils.compressBitmapForScale(pathName,scaleSize);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForScale(pathName,scaleSize);
         return this;
     }
     public LikeQQCropView setBitmapForScale(byte[] data, int offset, int length,int scaleSize) {
-        showBitmap=BitmapUtils.compressBitmapForScale(data,offset,length,scaleSize);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForScale(data,offset,length,scaleSize);
         return this;
     }
     public LikeQQCropView setBitmapForScale(FileDescriptor fd, Rect outPadding,int scaleSize) {
-        showBitmap=BitmapUtils.compressBitmapForScale(fd,outPadding,scaleSize);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForScale(fd,outPadding,scaleSize);
         return this;
     }
     public LikeQQCropView setBitmapForScale(Resources res, TypedValue value,InputStream is, Rect pad,int scaleSize) {
-        showBitmap=BitmapUtils.compressBitmapForScale(res,value,is,pad,scaleSize);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForScale(res,value,is,pad,scaleSize);
         return this;
     }
     public LikeQQCropView setBitmapForScale(InputStream is, Rect outPadding,int scaleSize) {
-        showBitmap=BitmapUtils.compressBitmapForScale(is,outPadding,scaleSize);
+        showBitmap= LikeQQCropViewUtils.compressBitmapForScale(is,outPadding,scaleSize);
         return this;
     }
     /*******************************************************************************************************/
