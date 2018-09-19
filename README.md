@@ -1,5 +1,9 @@
+| 如果有bug请用最新版本 | [ ![Download](https://api.bintray.com/packages/zhongrui/mylibrary/CropBitmap/images/download.svg) ](https://bintray.com/zhongrui/mylibrary/CropBitmap/_latestVersion) |
+|--------|----|
 # 仿QQ头像裁剪  
-  
+ 
+
+   
     
 
 ![github](https://github.com/zhongruiAndroid/CropBitmap/blob/master/app/src/main/res/drawable/clipbitmap2.gif "github")  
