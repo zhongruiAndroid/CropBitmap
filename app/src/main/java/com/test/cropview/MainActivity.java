@@ -56,7 +56,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //setBitmapForScale()
 
         likeView.setBitmapForWidth(R.drawable.bird,1080);
+        /*如果手机相册的图片出现旋转的情况*/
+        /* likeView.setBitmapForWidth(filePath,1080);
+        int degree = likeView.readPictureDegree("filePath");
+        Bitmap oldBitmap = likeView.getBitmap();
+        Bitmap rotateBitmap = likeView.rotateBitmap(degree, oldBitmap);
+        likeView.setBitmap(rotateBitmap);*/
+
+
 //        likeView.setBitmap(bitmap);
+
 
 
 

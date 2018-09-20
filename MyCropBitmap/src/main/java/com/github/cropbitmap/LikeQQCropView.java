@@ -15,6 +15,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
+import android.media.ExifInterface;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -29,6 +30,7 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
 import java.io.FileDescriptor;
+import java.io.IOException;
 import java.io.InputStream;
 
 /***
@@ -799,6 +801,10 @@ public class LikeQQCropView extends View {
         Log.i("@@@===","==="+s);
     }*/
 
+    public Bitmap getBitmap() {
+        return showBitmap;
+    }
+
     @Deprecated
     public LikeQQCropView setBitmap(Bitmap bitmap){
         showBitmap=bitmap;
@@ -914,4 +920,61 @@ public class LikeQQCropView extends View {
         return this;
     }
     /*******************************************************************************************************/
+
+
+    /**************************************************旋转图片*****************************************************/
+    /**
+     * 读取图片旋转的角度
+     *
+     * @param filePath
+     * @return
+     */
+    public int readPictureDegree(String filePath) {
+        int rotate = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(filePath);
+            int result = exifInterface.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED);
+
+            switch (result) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                default:
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return rotate;
+    }
+
+    /**
+     * 旋转图片
+     *
+     * @param angle
+     * @param bitmap
+     * @return
+     */
+    public Bitmap rotateBitmap(int angle, Bitmap bitmap) {
+        // 旋转图片 动作
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        // 创建新的图片
+        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        if (resizedBitmap != bitmap && bitmap != null && !bitmap.isRecycled()) {
+            bitmap.recycle();
+            bitmap = null;
+        }
+        return resizedBitmap;
+    }
 }
