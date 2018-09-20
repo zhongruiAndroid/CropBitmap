@@ -90,7 +90,7 @@ Bitmap rotateBitmap = likeView.rotateBitmap(degree, oldBitmap);
 
 likeView.setBitmap(rotateBitmap);
 
-/*或者使用下面4种方法*/
+/*或者使用下面4种方法,自动判断是否需要旋转图片*/
 likeView.setBitmapForHeightToRotate(filePath,height);
 likeView.setBitmapForWidthToRotate(filePath,width);
 likeView.setBitmapToRotate(filePath,width,height);
