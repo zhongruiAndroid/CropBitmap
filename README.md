@@ -79,7 +79,17 @@ likeView.setDoubleClickScale(1.8);
 /**获取裁剪框宽度*/
 likeView.getClipWidth();
 ```
+### 如果手机相册里面的图片出现旋转的情况
+```java
+likeView.setBitmapForWidth(filePath,1080);
 
+int degree = likeView.readPictureDegree("filePath");
+
+Bitmap oldBitmap = likeView.getBitmap();
+Bitmap rotateBitmap = likeView.rotateBitmap(degree, oldBitmap);
+
+likeView.setBitmap(rotateBitmap);
+```
 <br/>
 <br/>
 
