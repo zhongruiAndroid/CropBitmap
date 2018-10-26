@@ -12,7 +12,7 @@ import android.util.TypedValue;
 import java.io.FileDescriptor;
 import java.io.InputStream;
 
-public class LikeQQCropViewUtils {
+public class CropViewUtils {
 
     /*******************************************************************************************************/
     /**
@@ -39,7 +39,7 @@ public class LikeQQCropViewUtils {
         if (height > reqHeight || width > reqWidth) {
             final int heightRatio = Math.round((float) height / (float) reqHeight);
             final int widthRatio = Math.round((float) width / (float) reqWidth);
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+            inSampleSize = Math.max(heightRatio,widthRatio);
         }
         options.inSampleSize = inSampleSize;
         // 使用计算得到的inSampleSize值再次解析图片
@@ -61,7 +61,7 @@ public class LikeQQCropViewUtils {
         if (height > reqHeight || width > reqWidth) {
             final int heightRatio = Math.round((float) height / (float) reqHeight);
             final int widthRatio = Math.round((float) width / (float) reqWidth);
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+            inSampleSize = Math.max(heightRatio,widthRatio);
         }
         options.inSampleSize = inSampleSize;
         // 使用计算得到的inSampleSize值再次解析图片
@@ -83,7 +83,7 @@ public class LikeQQCropViewUtils {
         if (height > reqHeight || width > reqWidth) {
             final int heightRatio = Math.round((float) height / (float) reqHeight);
             final int widthRatio = Math.round((float) width / (float) reqWidth);
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+            inSampleSize = Math.max(heightRatio,widthRatio);
         }
         options.inSampleSize = inSampleSize;
         // 使用计算得到的inSampleSize值再次解析图片
@@ -105,7 +105,7 @@ public class LikeQQCropViewUtils {
         if (height > reqHeight || width > reqWidth) {
             final int heightRatio = Math.round((float) height / (float) reqHeight);
             final int widthRatio = Math.round((float) width / (float) reqWidth);
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+            inSampleSize = Math.max(heightRatio,widthRatio);
         }
         options.inSampleSize = inSampleSize;
         // 使用计算得到的inSampleSize值再次解析图片
@@ -127,7 +127,7 @@ public class LikeQQCropViewUtils {
         if (height > reqHeight || width > reqWidth) {
             final int heightRatio = Math.round((float) height / (float) reqHeight);
             final int widthRatio = Math.round((float) width / (float) reqWidth);
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+            inSampleSize = Math.max(heightRatio,widthRatio);
         }
         options.inSampleSize = inSampleSize;
         // 使用计算得到的inSampleSize值再次解析图片
@@ -149,7 +149,7 @@ public class LikeQQCropViewUtils {
         if (height > reqHeight || width > reqWidth) {
             final int heightRatio = Math.round((float) height / (float) reqHeight);
             final int widthRatio = Math.round((float) width / (float) reqWidth);
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+            inSampleSize = Math.max(heightRatio,widthRatio);
         }
         options.inSampleSize = inSampleSize;
         // 使用计算得到的inSampleSize值再次解析图片
