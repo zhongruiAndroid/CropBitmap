@@ -28,6 +28,7 @@ public class LikeXMCropViewUtils {
     public Bitmap showBitmap;
     public Matrix showBitmapMatrix;
     public RectF showBitmapRect;
+    private RectF initialShowBitmapRect;
 
     /*裁剪框*/
     public Paint cropPaint;
@@ -69,6 +70,10 @@ public class LikeXMCropViewUtils {
     public RectF rightTopTouchRect;
     public RectF leftBottomTouchRect;
     public RectF rightBottomTouchRect;
+
+    /*触摸点移动超出裁剪框，然后再移回来，需要这个偏移量计算哪个位置开始移动裁剪框*/
+    public float touchOffsetX;
+    public float touchOffsetY;
 
     public void prepare(){
         //图片所在矩阵
@@ -188,6 +193,8 @@ public class LikeXMCropViewUtils {
     private void refreshPaint() {
 
     }
-    public void a(){
+    public void refreshShowBitmapRect(){
+        showBitmapRect.set(0,0,showBitmap.getWidth(),showBitmap.getHeight());
+        showBitmapMatrix.mapRect(showBitmapRect);
     }
 }
