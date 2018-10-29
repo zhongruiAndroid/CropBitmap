@@ -128,13 +128,113 @@ public class LikeXMCropView extends View {
                 }
                 //恢复边框和图片触摸状态
                 currentState = -1;
-                break;
-            case MotionEvent.ACTION_MOVE:
 
+                //裁剪框和图片移动至view中心和放大操作
+                updateCropBorderLocation();
                 break;
+
         }
         gestureDetector.onTouchEvent(event);
         return true;
+    }
+
+    /**
+     * 裁剪框和图片移动至view中心和放大操作
+     */
+    private void updateCropBorderLocation() {
+        float rectWidth = viewUtils.cropRect.right - viewUtils.cropRect.left;
+        float rectHeight = viewUtils.cropRect.bottom - viewUtils.cropRect.top;
+        float offsetsX=0;
+        float offsetsY=0;
+        float scale=1f;
+        if(rectHeight<getHeight()&&rectWidth<getWidth()){
+            //需要进行放大和XY轴平移操作
+            offsetsX=viewUtils.cropRect.left+getWidth()-viewUtils.cropRect.right;
+            offsetsY=viewUtils.cropRect.top+getHeight()-viewUtils.cropRect.bottom;
+
+            //计算放大倍数
+            if(getWidth()*1f/rectWidth<getHeight()*1f/rectHeight){
+                scale=getWidth()*1f/rectWidth;
+            }else{
+                scale=getHeight()*1f/rectHeight;
+            }
+        }else if(rectHeight<getHeight()){
+            //需要Y轴平移
+            offsetsY=viewUtils.cropRect.top+getHeight()-viewUtils.cropRect.bottom;
+        }else if(rectWidth<getWidth()){
+            //需要X轴平移
+            offsetsX=viewUtils.cropRect.left+getWidth()-viewUtils.cropRect.right;
+        }
+
+        float translateX=0;
+        float translateY=0;
+        if(offsetsX!=0){
+            translateX=(offsetsX*1f/2)-viewUtils.cropRect.left;
+        }
+        if(offsetsY!=0){
+            translateY=(offsetsY*1f/2)-viewUtils.cropRect.top;
+        }
+
+        /*图片平移和放大*/
+       /* viewUtils.showBitmapMatrix.postTranslate(translateX,translateY);
+        viewUtils.showBitmapMatrix.postScale(scale,scale,getWidth()/2,getHeight()/2);
+        viewUtils.refreshShowBitmapRect();*/
+
+        /*viewUtils.cropRect.set(viewUtils.cropRect.left+translateX,
+                viewUtils.cropRect.top+translateY,
+                viewUtils.cropRect.right+translateX,
+                viewUtils.cropRect.bottom+translateY);*/
+        /*裁剪框平移和放大*/
+       /* Matrix matrix=new Matrix();
+        matrix.postTranslate(translateX,translateY);
+        matrix.postScale(scale,scale,getWidth()/2,getHeight()/2);
+
+        matrix.mapRect(viewUtils.cropRect);
+        viewUtils.refreshPath();
+        viewUtils.refreshTouchBorder(viewUtils.cropRect);
+
+        invalidate();*/
+
+        PropertyValuesHolder holderX = PropertyValuesHolder.ofFloat("x", 0, translateX);
+        PropertyValuesHolder holderY = PropertyValuesHolder.ofFloat("y", 0, translateY);
+        PropertyValuesHolder holderScale = PropertyValuesHolder.ofFloat("s",1f, scale);
+        animator = ValueAnimator.ofPropertyValuesHolder(holderX, holderY,holderScale);
+        final float[] beforeX = {0};
+        final float[] beforeY = {0};
+        final float[] beforeScale = {1};
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float x = (float) animation.getAnimatedValue("x");
+                float y = (float) animation.getAnimatedValue("y");
+                float s = (float) animation.getAnimatedValue("s");
+
+                Matrix matrix=new Matrix();
+                matrix.postTranslate(x - beforeX[0], y - beforeY[0]);
+//                matrix.mapRect(viewUtils.cropRect);
+                float scalePointX=(viewUtils.cropRect.right-viewUtils.cropRect.left)*1f/2+viewUtils.cropRect.left+x - beforeX[0];
+                float scalePointY=(viewUtils.cropRect.bottom-viewUtils.cropRect.top)*1f/2+viewUtils.cropRect.top+y - beforeY[0];
+                matrix.postScale(s*1f/beforeScale[0],s*1f/beforeScale[0],scalePointX,scalePointY);
+
+                matrix.mapRect(viewUtils.cropRect);
+                viewUtils.refreshPath();
+                viewUtils.refreshTouchBorder(viewUtils.cropRect);
+
+                Log("==ss="+s);
+
+                viewUtils.showBitmapMatrix.postTranslate(x - beforeX[0], y - beforeY[0]);
+                viewUtils.showBitmapMatrix.postScale(s*1f/beforeScale[0],s*1f/beforeScale[0],scalePointX,scalePointY);
+                beforeX[0] = x;
+                beforeY[0] = y;
+                beforeScale[0] = s;
+                /*重新计算图片所在Rect*/
+                viewUtils.refreshShowBitmapRect();
+                invalidate();
+            }
+        });
+        animator.setDuration(330);
+        animator.setInterpolator(null);
+        animator.start();
     }
 
     /**
@@ -250,15 +350,15 @@ public class LikeXMCropView extends View {
         canvas.drawPath(viewUtils.maskLayerPath, viewUtils.maskLayerPaint);
 
         ///
-        canvas.drawRect(viewUtils.leftBorderTouchRect, viewUtils.cropPaint);
+        /*canvas.drawRect(viewUtils.leftBorderTouchRect, viewUtils.cropPaint);
         canvas.drawRect(viewUtils.topBorderTouchRect, viewUtils.cropPaint);
         canvas.drawRect(viewUtils.rightBorderTouchRect, viewUtils.cropPaint);
         canvas.drawRect(viewUtils.bottomBorderTouchRect, viewUtils.cropPaint);
-//
+
         canvas.drawRect(viewUtils.leftTopTouchRect, viewUtils.cropPaint);
         canvas.drawRect(viewUtils.rightTopTouchRect, viewUtils.cropPaint);
         canvas.drawRect(viewUtils.leftBottomTouchRect, viewUtils.cropPaint);
-        canvas.drawRect(viewUtils.rightBottomTouchRect, viewUtils.cropPaint);
+        canvas.drawRect(viewUtils.rightBottomTouchRect, viewUtils.cropPaint);*/
         ///
     }
 
@@ -325,15 +425,16 @@ public class LikeXMCropView extends View {
     private void moveBottomBorder(float distanceY, MotionEvent e2) {
         //下边框向下移动
         if (distanceY < 0) {
-            ////这个时候如果图片放大，超过下边部分，就需要缩小图片
-            if (viewUtils.cropRect.bottom >= viewUtils.showBitmapRect.bottom) {
 
-            } else {
+            if (viewUtils.cropRect.bottom <= viewUtils.showBitmapRect.bottom&&viewUtils.cropRect.bottom <=getHeight()) {
                 //如果触摸点超出裁剪框范围移动无效，触摸点需要在裁剪框内部
                 if(viewUtils.cropRect.bottom-viewUtils.touchOffsetY<=e2.getY()){
                     float tempDistance = Math.min(viewUtils.showBitmapRect.bottom - viewUtils.cropRect.bottom, Math.abs(distanceY));
+                    tempDistance=Math.min(tempDistance,getHeight()-viewUtils.showBitmapRect.bottom );
                     viewUtils.cropRect.bottom = viewUtils.cropRect.bottom + tempDistance;
                 }
+            } else {
+                ////这个时候如果图片放大，超过下边部分，就需要缩小图片
 
             }
         } else {
@@ -355,15 +456,17 @@ public class LikeXMCropView extends View {
     private void moveRightBorder(float distanceX, MotionEvent e2) {
         //右边框向右移动
         if (distanceX < 0) {
-            ////这个时候如果图片放大，超过右边部分，就需要缩小图片
-            if (viewUtils.cropRect.right >= viewUtils.showBitmapRect.right) {
 
-            } else {
+            if (viewUtils.cropRect.right <= viewUtils.showBitmapRect.right&&viewUtils.cropRect.right<=getWidth()) {
                 //如果触摸点超出裁剪框范围移动无效，触摸点需要在裁剪框内部
                 if(viewUtils.cropRect.right-viewUtils.touchOffsetX<=e2.getX()){
                     float tempDistance = Math.min(viewUtils.showBitmapRect.right - viewUtils.cropRect.right, Math.abs(distanceX));
+                    //图片放大情况，右边部分超出屏幕，需要比较distance和right到右边屏幕的距离
+                    tempDistance=Math.min(getWidth()-viewUtils.cropRect.right,tempDistance);
                     viewUtils.cropRect.right = viewUtils.cropRect.right + tempDistance;
                 }
+            } else {
+                ////这个时候如果图片放大，超过右边部分，就需要缩小图片
 
             }
         } else {
@@ -385,16 +488,17 @@ public class LikeXMCropView extends View {
     private void moveTopBorder(float distanceY, MotionEvent e2) {
         //上边框向上移动
         if (distanceY > 0) {
-            ////这个时候如果图片放大，超过上边部分，就需要缩小图片
-            if (viewUtils.cropRect.top <= viewUtils.showBitmapRect.top) {
-
-            } else {
+            //需要考虑图片上部分图片超出屏幕的情况
+            if (viewUtils.cropRect.top >= viewUtils.showBitmapRect.top&&viewUtils.cropRect.top>=0) {
                 //如果触摸点超出裁剪框范围移动无效，触摸点需要在裁剪框内部
                 if(viewUtils.cropRect.top+viewUtils.touchOffsetY>=e2.getY()){
                     //比较裁剪框和图片的上边距离是否小于移动距离
                     float distance = Math.min(Math.abs(distanceY), Math.abs(viewUtils.cropRect.top - viewUtils.showBitmapRect.top));
+                    distance=Math.min(distance,viewUtils.cropRect.top);
                     viewUtils.cropRect.top = viewUtils.cropRect.top - distance;
                 }
+            } else {
+                ////这个时候如果图片放大，超过上边部分，就需要缩小图片
 
             }
         } else {
@@ -415,16 +519,17 @@ public class LikeXMCropView extends View {
     private void moveLeftBorder(float distanceX, MotionEvent e2) {
         //左边框向左移动
         if (distanceX > 0) {
-            ////这个时候如果图片放大，超过左边部分，就需要缩小图片
-            if (viewUtils.cropRect.left <= viewUtils.showBitmapRect.left) {
+            if (viewUtils.cropRect.left >= viewUtils.showBitmapRect.left&&viewUtils.cropRect.left >=0) {
                 //这个时候就不能向左移动裁剪框了
-            } else {
                 //如果触摸点超出裁剪框范围移动无效，触摸点需要在裁剪框内部
                 if(viewUtils.cropRect.left+viewUtils.touchOffsetX>=e2.getX()){
                     //比较裁剪框和图片的左边距离是否小于移动距离
                     float distance = Math.min(Math.abs(distanceX), Math.abs(viewUtils.cropRect.left - viewUtils.showBitmapRect.left));
+                    distance=Math.min(distance,viewUtils.cropRect.left);
                     viewUtils.cropRect.left = viewUtils.cropRect.left - distance;
                 }
+            } else {
+                ////这个时候如果图片放大，超过左边部分，就需要缩小图片
             }
         } else {
             //左边框向右移动
