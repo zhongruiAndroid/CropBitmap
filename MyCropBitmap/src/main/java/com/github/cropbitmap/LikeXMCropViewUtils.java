@@ -177,7 +177,7 @@ public class LikeXMCropViewUtils {
         maskLayerPath.op(cropPath, Path.Op.XOR);
 
     }
-    public void refreshPath() {
+    public void refreshCropPath() {
         if(!cropPath.isEmpty()){
             cropPath.reset();
         }
