@@ -65,6 +65,9 @@ public class LikeXMCropView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if(animator!=null&&animator.isRunning()){
+            return true;
+        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (viewUtils.leftBorderTouchRect.contains(event.getX(), event.getY())) {
@@ -211,7 +214,7 @@ public class LikeXMCropView extends View {
 
                 Matrix matrix=new Matrix();
                 matrix.postTranslate(x - beforeX[0], y - beforeY[0]);
-//                matrix.mapRect(viewUtils.cropRect);
+//              matrix.mapRect(viewUtils.cropRect);
                 float scalePointX=(viewUtils.cropRect.right-viewUtils.cropRect.left)*1f/2+viewUtils.cropRect.left+x - beforeX[0];
                 float scalePointY=(viewUtils.cropRect.bottom-viewUtils.cropRect.top)*1f/2+viewUtils.cropRect.top+y - beforeY[0];
                 matrix.postScale(s*1f/beforeScale[0],s*1f/beforeScale[0],scalePointX,scalePointY);
@@ -350,7 +353,7 @@ public class LikeXMCropView extends View {
         canvas.drawPath(viewUtils.maskLayerPath, viewUtils.maskLayerPaint);
 
         ///
-        /*canvas.drawRect(viewUtils.leftBorderTouchRect, viewUtils.cropPaint);
+        canvas.drawRect(viewUtils.leftBorderTouchRect, viewUtils.cropPaint);
         canvas.drawRect(viewUtils.topBorderTouchRect, viewUtils.cropPaint);
         canvas.drawRect(viewUtils.rightBorderTouchRect, viewUtils.cropPaint);
         canvas.drawRect(viewUtils.bottomBorderTouchRect, viewUtils.cropPaint);
@@ -358,7 +361,7 @@ public class LikeXMCropView extends View {
         canvas.drawRect(viewUtils.leftTopTouchRect, viewUtils.cropPaint);
         canvas.drawRect(viewUtils.rightTopTouchRect, viewUtils.cropPaint);
         canvas.drawRect(viewUtils.leftBottomTouchRect, viewUtils.cropPaint);
-        canvas.drawRect(viewUtils.rightBottomTouchRect, viewUtils.cropPaint);*/
+        canvas.drawRect(viewUtils.rightBottomTouchRect, viewUtils.cropPaint);
         ///
     }
 
