@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -169,6 +170,7 @@ public class LikeXMCropView extends View {
             offsetsX=viewUtils.cropRect.left+getWidth()-viewUtils.cropRect.right;
         }
 
+
         float translateX=0;
         float translateY=0;
         if(offsetsX!=0){
@@ -177,6 +179,14 @@ public class LikeXMCropView extends View {
         if(offsetsY!=0){
             translateY=(offsetsY*1f/2)-viewUtils.cropRect.top;
         }
+        RectF beforeRectF=new RectF(viewUtils.cropRect);
+
+        RectF afterRectF=new RectF(viewUtils.cropRect);
+        Matrix matrix=new Matrix();
+        matrix.postTranslate(translateX,translateY);
+        matrix.postScale(scale,scale,getWidth()/2,getHeight()/2);
+        matrix.mapRect(afterRectF);
+
 
         /*图片平移和放大*/
        /* viewUtils.showBitmapMatrix.postTranslate(translateX,translateY);
@@ -198,40 +208,59 @@ public class LikeXMCropView extends View {
 
         invalidate();*/
 
-        PropertyValuesHolder holderX = PropertyValuesHolder.ofFloat("x", 0, translateX);
-        PropertyValuesHolder holderY = PropertyValuesHolder.ofFloat("y", 0, translateY);
-        PropertyValuesHolder holderScale = PropertyValuesHolder.ofFloat("s",1f, scale);
-        animator = ValueAnimator.ofPropertyValuesHolder(holderX, holderY,holderScale);
-        final float[] beforeX = {0};
-        final float[] beforeY = {0};
-        final float[] beforeScale = {1};
+        PropertyValuesHolder dst1X = PropertyValuesHolder.ofFloat("dst1X", viewUtils.cropRect.left, afterRectF.left);
+        PropertyValuesHolder dst1Y = PropertyValuesHolder.ofFloat("dst1Y", viewUtils.cropRect.top, afterRectF.top);
+
+        PropertyValuesHolder dst2X = PropertyValuesHolder.ofFloat("dst2X", viewUtils.cropRect.right, afterRectF.right);
+        PropertyValuesHolder dst2Y = PropertyValuesHolder.ofFloat("dst2Y", viewUtils.cropRect.top, afterRectF.top);
+
+        PropertyValuesHolder dst3X = PropertyValuesHolder.ofFloat("dst3X", viewUtils.cropRect.right, afterRectF.right);
+        PropertyValuesHolder dst3Y = PropertyValuesHolder.ofFloat("dst3Y", viewUtils.cropRect.bottom, afterRectF.bottom);
+
+
+        animator = ValueAnimator.ofPropertyValuesHolder(
+                dst1X,
+                dst1Y,
+                dst2X,
+                dst2Y,
+                dst3X,
+                dst3Y);
+        final float[] dst = {beforeRectF.left,beforeRectF.top,beforeRectF.right,beforeRectF.top,beforeRectF.right,beforeRectF.bottom};
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                float x = (float) animation.getAnimatedValue("x");
-                float y = (float) animation.getAnimatedValue("y");
-                float s = (float) animation.getAnimatedValue("s");
+                float dst1X = (float) animation.getAnimatedValue("dst1X");
+                float dst1Y = (float) animation.getAnimatedValue("dst1Y");
 
-                Matrix matrix=new Matrix();
-                matrix.postTranslate(x - beforeX[0], y - beforeY[0]);
-//              matrix.mapRect(viewUtils.cropRect);
-                float scalePointX=(viewUtils.cropRect.right-viewUtils.cropRect.left)*1f/2+viewUtils.cropRect.left+x - beforeX[0];
-                float scalePointY=(viewUtils.cropRect.bottom-viewUtils.cropRect.top)*1f/2+viewUtils.cropRect.top+y - beforeY[0];
-                matrix.postScale(s*1f/beforeScale[0],s*1f/beforeScale[0],scalePointX,scalePointY);
+                float dst2X = (float) animation.getAnimatedValue("dst2X");
+                float dst2Y = (float) animation.getAnimatedValue("dst2Y");
 
-                matrix.mapRect(viewUtils.cropRect);
-                viewUtils.refreshPath();
+                float dst3X = (float) animation.getAnimatedValue("dst3X");
+                float dst3Y = (float) animation.getAnimatedValue("dst3Y");
+
+                Matrix tempMatrix=new Matrix();
+                tempMatrix.setPolyToPoly(dst,0,new float[]{dst1X,dst1Y,dst2X,dst2Y,dst3X,dst3Y},0,3);
+
+                viewUtils.showBitmapMatrix.postConcat(tempMatrix);
+
+                viewUtils.cropRect.left=dst1X;
+                viewUtils.cropRect.top=dst1Y;
+                viewUtils.cropRect.right=dst2X;
+                viewUtils.cropRect.bottom=dst3Y;
+
+                viewUtils.refreshCropPath();
                 viewUtils.refreshTouchBorder(viewUtils.cropRect);
 
-                Log("==ss="+s);
-
-                viewUtils.showBitmapMatrix.postTranslate(x - beforeX[0], y - beforeY[0]);
-                viewUtils.showBitmapMatrix.postScale(s*1f/beforeScale[0],s*1f/beforeScale[0],scalePointX,scalePointY);
-                beforeX[0] = x;
-                beforeY[0] = y;
-                beforeScale[0] = s;
                 /*重新计算图片所在Rect*/
                 viewUtils.refreshShowBitmapRect();
+
+                dst[0]=dst1X;
+                dst[1]=dst1Y;
+                dst[2]=dst2X;
+                dst[3]=dst2Y;
+                dst[4]=dst3X;
+                dst[5]=dst3Y;
+
                 invalidate();
             }
         });
@@ -292,6 +321,11 @@ public class LikeXMCropView extends View {
     private float getShowBitmapMatrixAttr(int flag) {
         float[] values = new float[9];
         viewUtils.showBitmapMatrix.getValues(values);
+        return values[flag];
+    }
+    private float getMatrixAttr(Matrix matrix,int flag) {
+        float[] values = new float[9];
+        matrix.getValues(values);
         return values[flag];
     }
 
@@ -415,7 +449,7 @@ public class LikeXMCropView extends View {
                         viewUtils.showBitmapMatrix.postTranslate(-distanceX, -distanceY);
                         break;
                 }
-                viewUtils.refreshPath();
+                viewUtils.refreshCropPath();
                 viewUtils.refreshTouchBorder(viewUtils.cropRect);
 
                 invalidate();
