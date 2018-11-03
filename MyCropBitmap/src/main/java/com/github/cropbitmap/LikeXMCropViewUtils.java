@@ -16,7 +16,7 @@ public class LikeXMCropViewUtils {
 
     /*图片移动到view中心需要*/
     public float needMoveX,needMoveY;
-    public float initScale=1;
+    public float initScale=1f;
 
     /*裁剪框内部距离*/
     public float borderDistance;
@@ -37,6 +37,10 @@ public class LikeXMCropViewUtils {
     public Matrix cropMatrix;
     public int cropColor;
     public float cropWidth=2;
+
+    /*裁剪框高宽比列*/
+    public float widthRatio=1;
+    public float heightRatio=2;
 
     /*裁剪框遮罩层*/
     public Paint maskLayerPaint;
@@ -74,6 +78,12 @@ public class LikeXMCropViewUtils {
     /*触摸点移动超出裁剪框，然后再移回来，需要这个偏移量计算哪个位置开始移动裁剪框*/
     public float touchOffsetX;
     public float touchOffsetY;
+
+    /*图片视觉效果最大的放大倍数
+    *(因为本身图片可能很大，缩放之后显示，比如宽度为2000px的图片显示在屏幕为1000px上，图片就缩放了0.5，这个时候设置最大倍数为2倍，实际图片本身缩放1就可以了)
+    *达到这个值，裁剪框就无法缩小
+    * */
+    public float maxScale=8f;
 
     public void prepare(){
         //图片所在矩阵
@@ -131,6 +141,7 @@ public class LikeXMCropViewUtils {
         /*显示图片区域path*/
 //        Path showBitmapPath=new Path();
 //        showBitmapPath.addRect();
+        initRect();
         initPath();
         refreshTouchBorder(cropRect);
     }
@@ -160,13 +171,36 @@ public class LikeXMCropViewUtils {
     private void Log(String str){
         Log.i("===","@@==="+str);
     };
+    public void initRect(){
+        cropRect.set(needMoveX,needMoveY,viewWidth-1f*needMoveX,viewHeight-1f*needMoveY);
+        //比列裁剪
+        if(widthRatio>0&&heightRatio>0){
+
+            float cropWidth=cropRect.right-cropRect.left;
+            float cropHeight=cropRect.bottom-cropRect.top;
+            if (widthRatio * 1f / heightRatio > cropWidth * 1f / cropHeight) {
+            //宽度撑满
+                float  newHeight=cropWidth*heightRatio/widthRatio;
+                float temp=(cropHeight-newHeight)*1f/2;
+                cropRect.set(needMoveX,needMoveY+temp,viewWidth-1f*needMoveX,viewHeight-1f*needMoveY-temp);
+            } else {
+            //高度撑满
+                float newWidth=cropHeight*widthRatio/heightRatio;
+                float temp=(cropWidth-newWidth)*1f/2;
+                cropRect.set(needMoveX+temp,needMoveY,viewWidth-1f*needMoveX-temp,viewHeight-1f*needMoveY);
+            }
+
+        }
+
+
+        Log(cropRect.toString());///
+    }
     public void initPath(){
         //裁剪框
         if(!cropPath.isEmpty()){
             cropPath.reset();
         }
-        cropRect.set(needMoveX,needMoveY,viewWidth-1f*needMoveX,viewHeight-1f*needMoveY);
-        Log(cropRect.toString());///
+
         cropPath.addRect(cropRect, Path.Direction.CW);
 
         //遮罩层
@@ -196,5 +230,20 @@ public class LikeXMCropViewUtils {
     public void refreshShowBitmapRect(){
         showBitmapRect.set(0,0,showBitmap.getWidth(),showBitmap.getHeight());
         showBitmapMatrix.mapRect(showBitmapRect);
+    }
+
+    /*获取裁剪框最小间隔*/
+    public float getMinCropWidth(){
+        float length;
+        RectF rectF=new RectF(0,0,showBitmap.getWidth(),showBitmap.getHeight());
+        showBitmapMatrix.mapRect(rectF);
+        if (showBitmap.getWidth() * 1f / showBitmap.getHeight() > viewWidth * 1f / viewHeight) {
+            //用来计算裁剪框最小间隔
+            length=(rectF.bottom-rectF.top)/maxScale;
+        } else {
+            //用来计算裁剪框最小间隔
+            length=(rectF.right-rectF.left)/maxScale;
+        }
+        return length;
     }
 }

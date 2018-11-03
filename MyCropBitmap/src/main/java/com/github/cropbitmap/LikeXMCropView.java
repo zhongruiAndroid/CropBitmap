@@ -130,11 +130,14 @@ public class LikeXMCropView extends View {
                 if (currentState == touch_status_bitmap) {
                     updateBitmapLocation();
                 }
+                if(currentState != touch_status_bitmap&&currentState!=-1){
+                    //移动裁剪框之后才修复裁剪框的位置
+                    //裁剪框和图片移动至view中心和放大操作
+                    updateCropBorderLocation();
+                }
                 //恢复边框和图片触摸状态
                 currentState = -1;
 
-                //裁剪框和图片移动至view中心和放大操作
-                updateCropBorderLocation();
                 break;
 
         }
@@ -264,7 +267,7 @@ public class LikeXMCropView extends View {
                 invalidate();
             }
         });
-        animator.setDuration(330);
+        animator.setDuration(410);
         animator.setInterpolator(null);
         animator.start();
     }
@@ -346,21 +349,22 @@ public class LikeXMCropView extends View {
         viewUtils.viewHeight = h;
 
 
-        viewUtils.initScale = 1;
-        if (viewUtils.showBitmap.getWidth() < w && viewUtils.showBitmap.getHeight() < h) {
+        viewUtils.initScale = 1f;
+       /* if (viewUtils.showBitmap.getWidth() < w && viewUtils.showBitmap.getHeight() < h) {
             viewUtils.needMoveX = 1f * (w - viewUtils.showBitmap.getWidth()) / 2;
             viewUtils.needMoveY = 1f * (h - viewUtils.showBitmap.getHeight()) / 2;
-        } else {
+        } else {*/
             if (viewUtils.showBitmap.getWidth() * 1f / viewUtils.showBitmap.getHeight() > w * 1f / h) {
                 viewUtils.initScale = w * 1f / viewUtils.showBitmap.getWidth();
                 viewUtils.needMoveX = 0;
                 viewUtils.needMoveY = 1f * (h - viewUtils.showBitmap.getHeight() * viewUtils.initScale) / 2;
+
             } else {
                 viewUtils.initScale = h * 1f / viewUtils.showBitmap.getHeight();
                 viewUtils.needMoveX = 1f * (w - viewUtils.showBitmap.getWidth() * viewUtils.initScale) / 2;
                 viewUtils.needMoveY = 0;
             }
-        }
+//        }
 
         viewUtils.prepare();
 
@@ -370,10 +374,11 @@ public class LikeXMCropView extends View {
         viewUtils.showBitmapMatrix.postTranslate(viewUtils.needMoveX, viewUtils.needMoveY);
 
         viewUtils.showBitmapMatrix.mapRect(viewUtils.showBitmapRect);
-//        viewUtils.initShowBitmapRect();
-//        viewUtils.showBitmapMatrix.setRectToRect();
+
+
 
         Log(viewUtils.showBitmapRect.toString());///、、、
+
     }
 
     @Override
@@ -415,43 +420,45 @@ public class LikeXMCropView extends View {
         gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                //X:左正右负,Y:上正下负
-                switch (currentState) {
-                    case touch_status_left:
-                        moveLeftBorder(distanceX, e2);
-                        break;
-                    case touch_status_top:
-                        moveTopBorder(distanceY, e2);
-                        break;
-                    case touch_status_right:
-                        moveRightBorder(distanceX, e2);
-                        break;
-                    case touch_status_bottom:
-                        moveBottomBorder(distanceY, e2);
-                        break;
-                    case touch_status_left_top:
-                        moveLeftBorder(distanceX, e2);
-                        moveTopBorder(distanceY, e2);
-                        break;
-                    case touch_status_right_top:
-                        moveTopBorder(distanceY, e2);
-                        moveRightBorder(distanceX, e2);
-                        break;
-                    case touch_status_left_bottom:
-                        moveLeftBorder(distanceX, e2);
-                        moveBottomBorder(distanceY, e2);
-                        break;
-                    case touch_status_right_bottom:
-                        moveRightBorder(distanceX, e2);
-                        moveBottomBorder(distanceY, e2);
-                        break;
-                    case touch_status_bitmap:
-                        viewUtils.showBitmapMatrix.postTranslate(-distanceX, -distanceY);
-                        break;
-                }
-                viewUtils.refreshCropPath();
-                viewUtils.refreshTouchBorder(viewUtils.cropRect);
 
+                    //X:左正右负,Y:上正下负
+                    switch (currentState) {
+                        case touch_status_left:
+                            moveLeftBorder(distanceX, e2);
+                            break;
+                        case touch_status_top:
+                            moveTopBorder(distanceY, e2);
+                            break;
+                        case touch_status_right:
+                            moveRightBorder(distanceX, e2);
+                            break;
+                        case touch_status_bottom:
+                            moveBottomBorder(distanceY, e2);
+                            break;
+                        case touch_status_left_top:
+                            moveLeftBorder(distanceX, e2);
+                            moveTopBorder(distanceY, e2);
+                            break;
+                        case touch_status_right_top:
+                            moveTopBorder(distanceY, e2);
+                            moveRightBorder(distanceX, e2);
+                            break;
+                        case touch_status_left_bottom:
+                            moveLeftBorder(distanceX, e2);
+                            moveBottomBorder(distanceY, e2);
+                            break;
+                        case touch_status_right_bottom:
+                            moveRightBorder(distanceX, e2);
+                            moveBottomBorder(distanceY, e2);
+                            break;
+                    }
+
+                    viewUtils.refreshCropPath();
+                    viewUtils.refreshTouchBorder(viewUtils.cropRect);
+
+                if(touch_status_bitmap==currentState){
+                    viewUtils.showBitmapMatrix.postTranslate(-distanceX, -distanceY);
+                }
                 invalidate();
 //                return super.onScroll(e1, e2, distanceX, distanceY);
                 return true;
@@ -467,7 +474,7 @@ public class LikeXMCropView extends View {
                 //如果触摸点超出裁剪框范围移动无效，触摸点需要在裁剪框内部
                 if(viewUtils.cropRect.bottom-viewUtils.touchOffsetY<=e2.getY()){
                     float tempDistance = Math.min(viewUtils.showBitmapRect.bottom - viewUtils.cropRect.bottom, Math.abs(distanceY));
-                    tempDistance=Math.min(tempDistance,getHeight()-viewUtils.showBitmapRect.bottom );
+                    tempDistance=Math.min(tempDistance,getHeight()-viewUtils.cropRect.bottom );
                     viewUtils.cropRect.bottom = viewUtils.cropRect.bottom + tempDistance;
                 }
             } else {
@@ -481,9 +488,11 @@ public class LikeXMCropView extends View {
                 //需要比较下边和上边的距离,保持下上两边的间隔
                 if (viewUtils.cropRect.top + viewUtils.borderDistance + Math.abs(distanceY) > viewUtils.cropRect.bottom) {
                     float tempDistance = viewUtils.cropRect.bottom - viewUtils.cropRect.top - viewUtils.borderDistance;
-                    viewUtils.cropRect.bottom = viewUtils.cropRect.bottom - tempDistance;
+
+                    //计算裁剪框移动时，是否超过最小限制
+                    viewUtils.cropRect.bottom =getCropBottom(tempDistance);
                 } else {
-                    viewUtils.cropRect.bottom = viewUtils.cropRect.bottom - Math.abs(distanceY);
+                    viewUtils.cropRect.bottom = getCropBottom(Math.abs(distanceY));
                 }
             }
 
@@ -513,9 +522,11 @@ public class LikeXMCropView extends View {
                 //需要比较左边和右边的距离,保持左右两边的间隔
                 if (viewUtils.cropRect.left + viewUtils.borderDistance + Math.abs(distanceX) > viewUtils.cropRect.right) {
                     float tempDistance = viewUtils.cropRect.right - viewUtils.cropRect.left - viewUtils.borderDistance;
-                    viewUtils.cropRect.right = viewUtils.cropRect.right - tempDistance;
+
+                    //计算裁剪框移动时，是否超过最小限制
+                    viewUtils.cropRect.right = getCropRight(tempDistance);
                 } else {
-                    viewUtils.cropRect.right = viewUtils.cropRect.right - Math.abs(distanceX);
+                    viewUtils.cropRect.right = getCropRight(Math.abs(distanceX));
                 }
             }
 
@@ -545,9 +556,11 @@ public class LikeXMCropView extends View {
                 //需要保持上下两边的距离,保持上下的间隔
                 if (viewUtils.cropRect.top + Math.abs(distanceY) + viewUtils.borderDistance > viewUtils.cropRect.bottom) {
                     float tempDistance = viewUtils.cropRect.bottom - viewUtils.borderDistance - viewUtils.cropRect.top;
-                    viewUtils.cropRect.top = viewUtils.cropRect.top + tempDistance;
+
+                    //计算裁剪框移动时，是否超过最小限制
+                    viewUtils.cropRect.top =getCropTop(tempDistance);
                 } else {
-                    viewUtils.cropRect.top = viewUtils.cropRect.top + Math.abs(distanceY);
+                    viewUtils.cropRect.top = getCropTop(Math.abs(distanceY));
                 }
             }
         }
@@ -575,12 +588,69 @@ public class LikeXMCropView extends View {
                 //需要比较左边和右边的距离,保持左右两边的间隔
                 if (viewUtils.cropRect.left + Math.abs(distanceX) + viewUtils.borderDistance > viewUtils.cropRect.right) {
                     float tempDistance = viewUtils.cropRect.right - viewUtils.borderDistance - viewUtils.cropRect.left;
-                    viewUtils.cropRect.left = viewUtils.cropRect.left + tempDistance;
+
+                    //计算裁剪框移动时，是否超过最小限制
+                    viewUtils.cropRect.left=getCropLeft(tempDistance);
                 } else {
-                    viewUtils.cropRect.left = viewUtils.cropRect.left + Math.abs(distanceX);
+                    viewUtils.cropRect.left = getCropLeft(Math.abs(distanceX));
                 }
             }
 
+        }
+    }
+
+    /*
+    * 计算裁剪框移动时，是否超过最小限制
+    * */
+    private float getCropLeft(float tempDistance) {
+        //计算是否超过裁剪框最小值
+        float tempLeft = viewUtils.cropRect.left + tempDistance;
+        if(viewUtils.cropRect.right - tempLeft>=viewUtils.getMinCropWidth()){
+            return  tempLeft;
+        }else{
+            return viewUtils.cropRect.left = viewUtils.cropRect.right - viewUtils.getMinCropWidth();
+        }
+    }
+
+    /*
+     * 计算裁剪框移动时，是否超过最小限制
+     * */
+    private float getCropTop(float tempDistance) {
+        //计算是否超过裁剪框最小值
+        float tempTop = viewUtils.cropRect.top + tempDistance;
+
+        if(viewUtils.cropRect.bottom-tempTop>=viewUtils.getMinCropWidth()){
+            return  tempTop;
+        }else{
+            return   viewUtils.cropRect.bottom -viewUtils.getMinCropWidth();
+        }
+    }
+
+    /*
+     * 计算裁剪框移动时，是否超过最小限制
+     * */
+    private float getCropRight(float tempDistance) {
+        //计算是否超过裁剪框最小值
+        float tempRight = viewUtils.cropRect.right - tempDistance;
+
+        if(tempRight-viewUtils.cropRect.left>=viewUtils.getMinCropWidth()){
+            return  tempRight;
+        }else{
+            return  viewUtils.cropRect.left +viewUtils.getMinCropWidth();
+        }
+    }
+
+    /*
+     * 计算裁剪框移动时，是否超过最小限制
+     * */
+    private float getCropBottom(float tempDistance) {
+        //计算是否超过裁剪框最小值
+        float tempBottom = viewUtils.cropRect.bottom - tempDistance;
+
+        if(tempBottom-viewUtils.cropRect.top>=viewUtils.getMinCropWidth()){
+            return  tempBottom;
+        }else{
+            return  viewUtils.cropRect.top +viewUtils.getMinCropWidth();
         }
     }
 }
