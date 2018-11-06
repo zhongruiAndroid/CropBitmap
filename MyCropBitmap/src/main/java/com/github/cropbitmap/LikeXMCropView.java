@@ -63,7 +63,6 @@ public class LikeXMCropView extends View {
         initGestureDetector();
     }
 
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(animator!=null&&animator.isRunning()){
@@ -139,7 +138,8 @@ public class LikeXMCropView extends View {
                 currentState = -1;
 
                 break;
-
+                case MotionEvent.ACTION_MOVE:
+                    break;
         }
         gestureDetector.onTouchEvent(event);
         return true;
@@ -460,7 +460,6 @@ public class LikeXMCropView extends View {
                     viewUtils.showBitmapMatrix.postTranslate(-distanceX, -distanceY);
                 }
                 invalidate();
-//                return super.onScroll(e1, e2, distanceX, distanceY);
                 return true;
             }
         });
@@ -579,38 +578,35 @@ public class LikeXMCropView extends View {
 
                     //是否比列裁剪
                     if(isCropForRatio()){
-                        float ratioDistance=distance*viewUtils.heightRatio/viewUtils.widthRatio;
+                        //乘以10增加缩小速度
+                        float ratioDistance=distance*viewUtils.heightRatio/viewUtils.widthRatio*10f;
 
                         //修正裁剪框位置之后，如果图片包围裁剪框，移动裁剪则缩小图片(如果图片某个方向和裁剪框重合就不操作)
                         //和图片比较上下位置
-                        ratioDistance=Math.min(ratioDistance,viewUtils.cropRect.top-viewUtils.getBitmapRect().top);
-                        ratioDistance=Math.min(ratioDistance,viewUtils.getBitmapRect().bottom-viewUtils.cropRect.bottom);
+                        ratioDistance=Math.min(ratioDistance,2*Math.abs(viewUtils.cropRect.top-viewUtils.getBitmapRect().top));
+                        ratioDistance=Math.min(ratioDistance,2*Math.abs(viewUtils.getBitmapRect().bottom-viewUtils.cropRect.bottom));
 
                         if(ratioDistance!=0){
-
 
                             viewUtils.cropRect.top=viewUtils.cropRect.top-ratioDistance/2;
                             viewUtils.cropRect.bottom=viewUtils.cropRect.bottom+ratioDistance/2;
 
+
                             //修正裁剪框位置之后，再移动边框，如果裁剪框的上下达到view边界则缩小图片
-                            if(viewUtils.cropRect.top<=0){
-                                float topMove=Math.abs(viewUtils.cropRect.top);
-                                float leftMove=topMove*viewUtils.widthRatio/viewUtils.heightRatio;
+                            if(viewUtils.cropRect.top<0){
+                                    float topMove=Math.abs(viewUtils.cropRect.top);
+                                    float leftMove=topMove*2f*viewUtils.widthRatio/viewUtils.heightRatio;
 
-                                //缩小图片
-                                float lengthX = viewUtils.cropRect.right - viewUtils.getBitmapRect().left;
+                                    //缩小图片
+                                    float lengthX = viewUtils.cropRect.right - viewUtils.getBitmapRect().left;
 
-                                float scaleX=(leftMove+viewUtils.cropRect.right - viewUtils.cropRect.left)/lengthX;
-                                float x=viewUtils.cropRect.right;
-                                float y=(viewUtils.cropRect.bottom-viewUtils.cropRect.top)/2;
-                                float matrixAttr = getShowBitmapMatrixAttr(Matrix.MSCALE_X);
+                                    float scaleY=(getHeight()*1f/2-viewUtils.getBitmapRect().top-topMove)/(getHeight()*1f/2-viewUtils.getBitmapRect().top);
+                                    float scaleX=(leftMove+viewUtils.cropRect.right - viewUtils.cropRect.left)/lengthX;
+                                    float x=viewUtils.cropRect.right;
+                                    float y=(viewUtils.cropRect.bottom-viewUtils.cropRect.top)/2;
 
-
-                                ////裁剪框内部距离达到界限时，不需要放大和缩小了
-                                //过度缩小问题
-                                viewUtils.showBitmapMatrix.postScale(scaleX*matrixAttr,scaleX*matrixAttr,x,y);
-
-
+                                    ////裁剪框内部距离达到界限时，不需要放大和缩小了
+                                    viewUtils.showBitmapMatrix.postScale(scaleY,scaleY,x,getHeight()*1f/2);
 
                                 ratioDistance=(ratioDistance/2+viewUtils.cropRect.top)*2f;
                                 viewUtils.cropRect.top=0;
@@ -620,7 +616,6 @@ public class LikeXMCropView extends View {
                             distance=ratioDistance*viewUtils.widthRatio/viewUtils.heightRatio;
                             viewUtils.cropRect.left = viewUtils.cropRect.left - distance;
                         }
-
 
                     }else{
                         viewUtils.cropRect.left = viewUtils.cropRect.left - distance;
