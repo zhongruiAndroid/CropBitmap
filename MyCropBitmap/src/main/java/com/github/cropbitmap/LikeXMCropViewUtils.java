@@ -39,8 +39,8 @@ public class LikeXMCropViewUtils {
     public float cropWidth=2;
 
     /*裁剪框高宽比列*/
-    public float widthRatio=1;
-    public float heightRatio=2;
+    public float widthRatio=0;
+    public float heightRatio=0;
 
     /*裁剪框遮罩层*/
     public Paint maskLayerPaint;
