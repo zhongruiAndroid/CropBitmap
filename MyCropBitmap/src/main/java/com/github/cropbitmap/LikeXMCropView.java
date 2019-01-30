@@ -376,7 +376,7 @@ public class LikeXMCropView extends View {
         viewUtils.showBitmapMatrix.mapRect(viewUtils.showBitmapRect);
 
 
-
+        // TODO: 2019/1/30  注释
         Log(viewUtils.showBitmapRect.toString());///、、、
 
     }
@@ -391,6 +391,7 @@ public class LikeXMCropView extends View {
         canvas.drawPath(viewUtils.cropPath, viewUtils.cropPaint);
         canvas.drawPath(viewUtils.maskLayerPath, viewUtils.maskLayerPaint);
 
+        // TODO: 2019/1/30 加边框
         ///
         canvas.drawRect(viewUtils.leftBorderTouchRect, viewUtils.cropPaint);
         canvas.drawRect(viewUtils.topBorderTouchRect, viewUtils.cropPaint);
