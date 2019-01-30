@@ -45,8 +45,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'com.github.Almeros:android-gesture-detectors:v1.0'
+//    implementation 'com.github.Almeros:android-gesture-detectors:v1.0'
 //    implementation 'com.github:RxBus:1.0.5'
-    implementation 'com.aliyun.ams:alicloud-android-hotfix:3.2.4'
+//    implementation 'com.aliyun.ams:alicloud-android-hotfix:3.2.4'
     implementation project(':MyCropBitmap')
 }
