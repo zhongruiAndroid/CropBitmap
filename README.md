@@ -8,7 +8,7 @@
    
     
 
-![github](https://github.com/zhongruiAndroid/CropBitmap/blob/master/app/src/main/res/drawable/clipbitmap2.gif "github")  
+![github](https://github.com/zhongruiAndroid/CropBitmap/blob/master/imagedirectory/clipbitmap2.gif "github")  
 
 ## [Demo.apk下载](https://raw.githubusercontent.com/zhongruiAndroid/CropBitmap/master/app/sampledata/app.apk "apk文件")
     
