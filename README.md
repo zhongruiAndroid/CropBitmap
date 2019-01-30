@@ -20,7 +20,15 @@
 | doubleClickScale    | float | 双击图片放大倍数(默认1.8,最大值不超过maxScale)
 
   
-  
+```xml
+<com.github.cropbitmap.LikeQQCropView
+    android:id="@+id/likeView"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:background="@color/white"
+    />
+```
 
 
 #### 设置Bitmap
