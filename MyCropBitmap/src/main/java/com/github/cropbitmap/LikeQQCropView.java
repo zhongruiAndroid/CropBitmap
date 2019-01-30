@@ -427,15 +427,22 @@ public class LikeQQCropView extends View {
         float[]temp=new float[9];
         showBitmapMatrix.getValues(temp);
 
-        if(temp[Matrix.MSCALE_X]<0||temp[Matrix.MSCALE_Y]<0){
+        if(temp[Matrix.MSCALE_X]<0&&temp[Matrix.MSCALE_Y]<0){
             //如果裁剪时有翻转图片，则对图片做处理
-            Matrix flipMatrix = new Matrix();
-
-            flipMatrix.postScale(temp[Matrix.MSCALE_X],temp[Matrix.MSCALE_Y],newBitmap.getWidth()/2,newBitmap.getWidth()/2);
-
-            newBitmap=Bitmap.createBitmap(newBitmap,0,0,newBitmap.getWidth(),newBitmap.getHeight(),flipMatrix,true);
+            newBitmap=getFlipBitmap(newBitmap,-1,-1);
+        }else if(temp[Matrix.MSCALE_X]<0){
+            newBitmap=getFlipBitmap(newBitmap,-1,1);
+        }else if(temp[Matrix.MSCALE_Y]<0){
+            newBitmap=getFlipBitmap(newBitmap,1,-1);
         }
+        needCropBitmap.recycle();
         needCropBitmap=null;
+        return newBitmap;
+    }
+    private Bitmap getFlipBitmap(Bitmap newBitmap,int MSCALE_X,int MSCALE_Y){
+        Matrix flipMatrix = new Matrix();
+        flipMatrix.postScale(MSCALE_X,MSCALE_Y,newBitmap.getWidth()/2,newBitmap.getWidth()/2);
+        newBitmap=Bitmap.createBitmap(newBitmap,0,0,newBitmap.getWidth(),newBitmap.getHeight(),flipMatrix,true);
         return newBitmap;
     }
     /*水平翻转*/
