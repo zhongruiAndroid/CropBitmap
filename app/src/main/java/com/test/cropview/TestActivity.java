@@ -2,6 +2,7 @@ package com.test.cropview;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class TestActivity extends AppCompatActivity {
@@ -16,5 +17,7 @@ public class TestActivity extends AppCompatActivity {
     private void initView() {
         iv=findViewById(R.id.iv);
         iv.setImageBitmap(TestBean.bitmap);
+        Log.i("=====","====="+TestBean.bitmap.getWidth());
+        Log.i("=====","====="+TestBean.bitmap.getHeight());
     }
 }

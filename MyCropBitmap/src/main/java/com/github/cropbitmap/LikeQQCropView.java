@@ -384,6 +384,8 @@ public class LikeQQCropView extends View {
         //获取可以触摸放大的区域
         touchRegion.setPath(bigCirclePath,new Region(0,0,getWidth(),getHeight()));
     }
+
+    /*裁剪*/
     public Bitmap clip(){
         if(sizeChanged==false){
             return null;
@@ -436,6 +438,7 @@ public class LikeQQCropView extends View {
         needCropBitmap=null;
         return newBitmap;
     }
+    /*水平翻转*/
     public void horizontalFlip(){
         post(new Runnable() {
             @Override
@@ -447,6 +450,7 @@ public class LikeQQCropView extends View {
             }
         });
     }
+    /**垂直翻转*/
     public void verticalFlip(){
         post(new Runnable() {
             @Override
@@ -459,6 +463,8 @@ public class LikeQQCropView extends View {
         });
 
     }
+
+    /**垂直+水平翻转*/
     public void verticalAndHorizontalFlip(){
         post(new Runnable() {
             @Override
@@ -471,6 +477,7 @@ public class LikeQQCropView extends View {
             }
         });
     }
+    /*还原*/
     public void reset(){
         init();
         invalidate();
