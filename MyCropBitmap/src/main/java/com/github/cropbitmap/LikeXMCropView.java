@@ -392,6 +392,7 @@ public class LikeXMCropView extends View {
         canvas.drawPath(viewUtils.cropPath, viewUtils.cropPaint);
         canvas.drawPath(viewUtils.maskLayerPath, viewUtils.maskLayerPaint);
 
+        // TODO: 2019/1/30 加边框
         ///
         // TODO: 2019/2/11
         canvas.drawRect(viewUtils.leftBorderTouchRect, viewUtils.cropPaint);
