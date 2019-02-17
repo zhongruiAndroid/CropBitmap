@@ -192,21 +192,21 @@ public class LikeXMCropView extends View {
 
 
         /*图片平移和放大*/
-       /* viewUtils.showBitmapMatrix.postTranslate(translateX,translateY);
+      /*  viewUtils.showBitmapMatrix.postTranslate(translateX,translateY);
         viewUtils.showBitmapMatrix.postScale(scale,scale,getWidth()/2,getHeight()/2);
-        viewUtils.refreshShowBitmapRect();*/
+        viewUtils.refreshShowBitmapRect();
 
-        /*viewUtils.cropRect.set(viewUtils.cropRect.left+translateX,
+        viewUtils.cropRect.set(viewUtils.cropRect.left+translateX,
                 viewUtils.cropRect.top+translateY,
                 viewUtils.cropRect.right+translateX,
-                viewUtils.cropRect.bottom+translateY);*/
-        /*裁剪框平移和放大*/
-       /* Matrix matrix=new Matrix();
-        matrix.postTranslate(translateX,translateY);
-        matrix.postScale(scale,scale,getWidth()/2,getHeight()/2);
+                viewUtils.cropRect.bottom+translateY);
+//        裁剪框平移和放大
+        Matrix matrix2=new Matrix();
+        matrix2.postTranslate(translateX,translateY);
+        matrix2.postScale(scale,scale,getWidth()/2,getHeight()/2);
 
-        matrix.mapRect(viewUtils.cropRect);
-        viewUtils.refreshPath();
+        matrix2.mapRect(viewUtils.cropRect);
+        viewUtils.refreshCropPath();
         viewUtils.refreshTouchBorder(viewUtils.cropRect);
 
         invalidate();*/
