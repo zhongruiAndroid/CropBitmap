@@ -15,7 +15,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
-import android.media.ExifInterface;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -30,7 +29,6 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
 import java.io.FileDescriptor;
-import java.io.IOException;
 import java.io.InputStream;
 
 /***
@@ -836,7 +834,7 @@ public class LikeQQCropView extends View {
     /*针对相册图片旋转新增一个方法*/
     public LikeQQCropView setBitmapToRotate(String pathName, int reqWidth, int reqHeight) {
         showBitmap= CropViewUtils.compressBitmap(pathName,reqWidth,reqHeight);
-        int degree = readPictureDegree(pathName);
+        int degree = CropViewUtils.readPictureDegree(pathName);
         if(degree>0){
             showBitmap=rotateBitmap(degree,showBitmap);
         }
@@ -873,7 +871,7 @@ public class LikeQQCropView extends View {
     /*针对相册图片旋转新增一个方法*/
     public LikeQQCropView setBitmapForHeightToRotate(String pathName,int reqHeight) {
         showBitmap= CropViewUtils.compressBitmapForHeight(pathName,reqHeight);
-        int degree = readPictureDegree(pathName);
+        int degree = CropViewUtils.readPictureDegree(pathName);
         if(degree>0){
             showBitmap=rotateBitmap(degree,showBitmap);
         }
@@ -910,7 +908,7 @@ public class LikeQQCropView extends View {
     /*针对相册图片旋转新增一个方法*/
     public LikeQQCropView setBitmapForWidthToRotate(String pathName,int reqWidth) {
         showBitmap= CropViewUtils.compressBitmapForWidth(pathName,reqWidth);
-        int degree = readPictureDegree(pathName);
+        int degree = CropViewUtils.readPictureDegree(pathName);
         if(degree>0){
             showBitmap=rotateBitmap(degree,showBitmap);
         }
@@ -947,7 +945,7 @@ public class LikeQQCropView extends View {
     /*针对相册图片旋转新增一个方法*/
     public LikeQQCropView setBitmapForScaleToRotate(String pathName,int scaleSize) {
         showBitmap= CropViewUtils.compressBitmapForScale(pathName,scaleSize);
-        int degree = readPictureDegree(pathName);
+        int degree = CropViewUtils.readPictureDegree(pathName);
         if(degree>0){
             showBitmap=rotateBitmap(degree,showBitmap);
         }
@@ -973,39 +971,7 @@ public class LikeQQCropView extends View {
 
 
     /**************************************************旋转图片*****************************************************/
-    /**
-     * 读取图片旋转的角度
-     *
-     * @param filePath
-     * @return
-     */
-    public int readPictureDegree(String filePath) {
-        int rotate = 0;
-        try {
-            ExifInterface exifInterface = new ExifInterface(filePath);
-            int result = exifInterface.getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_UNDEFINED);
 
-            switch (result) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    rotate = 90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    rotate = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    rotate = 270;
-                    break;
-                default:
-                    break;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return rotate;
-    }
 
     /**
      * 旋转图片
