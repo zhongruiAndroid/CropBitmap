@@ -831,13 +831,14 @@ public class LikeQQCropView extends View {
         showBitmap= CropViewUtils.compressBitmap(pathName,reqWidth,reqHeight);
         return this;
     }
-    /*针对相册图片旋转新增一个方法*/
+    @Deprecated
     public LikeQQCropView setBitmapToRotate(String pathName, int reqWidth, int reqHeight) {
+        //内部已做旋转处理
         showBitmap= CropViewUtils.compressBitmap(pathName,reqWidth,reqHeight);
-        int degree = CropViewUtils.readPictureDegree(pathName);
-        if(degree>0){
-            showBitmap=rotateBitmap(degree,showBitmap);
-        }
+//        int degree = CropViewUtils.readPictureDegree(pathName);
+//        if(degree>0){
+//            showBitmap=rotateBitmap(degree,showBitmap);
+//        }
         return this;
     }
     public LikeQQCropView setBitmap(byte[] data, int offset, int length, int reqWidth, int reqHeight) {
@@ -868,13 +869,14 @@ public class LikeQQCropView extends View {
         showBitmap= CropViewUtils.compressBitmapForHeight(pathName,reqHeight);
         return this;
     }
-    /*针对相册图片旋转新增一个方法*/
+    @Deprecated
     public LikeQQCropView setBitmapForHeightToRotate(String pathName,int reqHeight) {
+        //内部已做旋转处理
         showBitmap= CropViewUtils.compressBitmapForHeight(pathName,reqHeight);
-        int degree = CropViewUtils.readPictureDegree(pathName);
-        if(degree>0){
-            showBitmap=rotateBitmap(degree,showBitmap);
-        }
+//        int degree = CropViewUtils.readPictureDegree(pathName);
+//        if(degree>0){
+//            showBitmap=rotateBitmap(degree,showBitmap);
+//        }
         return this;
     }
     public LikeQQCropView setBitmapForHeight(byte[] data, int offset, int length,int reqHeight) {
@@ -905,13 +907,14 @@ public class LikeQQCropView extends View {
         showBitmap= CropViewUtils.compressBitmapForWidth(pathName,reqWidth);
         return this;
     }
-    /*针对相册图片旋转新增一个方法*/
+    @Deprecated
     public LikeQQCropView setBitmapForWidthToRotate(String pathName,int reqWidth) {
+        //内部已做旋转处理
         showBitmap= CropViewUtils.compressBitmapForWidth(pathName,reqWidth);
-        int degree = CropViewUtils.readPictureDegree(pathName);
-        if(degree>0){
-            showBitmap=rotateBitmap(degree,showBitmap);
-        }
+//        int degree = CropViewUtils.readPictureDegree(pathName);
+//        if(degree>0){
+//            showBitmap=rotateBitmap(degree,showBitmap);
+//        }
         return this;
     }
     public LikeQQCropView setBitmapForWidth(byte[] data, int offset, int length, int reqWidth) {
@@ -942,13 +945,14 @@ public class LikeQQCropView extends View {
         showBitmap= CropViewUtils.compressBitmapForScale(pathName,scaleSize);
         return this;
     }
-    /*针对相册图片旋转新增一个方法*/
+    @Deprecated
     public LikeQQCropView setBitmapForScaleToRotate(String pathName,int scaleSize) {
+        //内部已做旋转处理
         showBitmap= CropViewUtils.compressBitmapForScale(pathName,scaleSize);
-        int degree = CropViewUtils.readPictureDegree(pathName);
-        if(degree>0){
-            showBitmap=rotateBitmap(degree,showBitmap);
-        }
+//        int degree = CropViewUtils.readPictureDegree(pathName);
+//        if(degree>0){
+//            showBitmap=rotateBitmap(degree,showBitmap);
+//        }
         return this;
     }
     public LikeQQCropView setBitmapForScale(byte[] data, int offset, int length,int scaleSize) {
