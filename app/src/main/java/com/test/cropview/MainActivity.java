@@ -1,12 +1,20 @@
 package com.test.cropview;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 
+import com.github.cropbitmap.CropViewUtils;
 import com.github.cropbitmap.LikeQQCropView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -55,7 +63,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //setBitmapForWidth()
         //setBitmapForScale()
 
-        likeView.setBitmapForWidth(R.drawable.bird,1080);
+//        likeView.setBitmapForWidth(R.drawable.bird,1080);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},100);
+        }else{
+            setBitmapForView();
+        }
 
         /*如果手机相册的图片出现旋转的情况*/
         /* likeView.setBitmapForWidth(filePath,1080);
@@ -91,31 +104,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
+
+    public void setBitmapForView(){
+        String path=Environment.getExternalStorageDirectory()+"/a/phone.jpg";
+//        Log.e("======","path="+path);
+        likeView.setBitmapForWidthToRotate(path,1080);
+        Bitmap bitmap = CropViewUtils.compressBitmapForWidth(this,R.drawable.bird,1080);
+        Log.e("======","width="+bitmap.getWidth()+"====="+"height="+bitmap.getHeight());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==100&&grantResults.length>0&&grantResults[0]== PackageManager.PERMISSION_GRANTED){
+            setBitmapForView();
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btHorizontalFlip:
                 //水平翻转
                 likeView.horizontalFlip();
-            break;
+                break;
             case R.id.btVerticalFlip:
                 //垂直翻转
                 likeView.verticalFlip();
-            break;
+                break;
             case R.id.btBoth:
                 //垂直水平翻转
                 likeView.verticalAndHorizontalFlip();
-            break;
+                break;
             case R.id.btReset:
                 //重置图片位置
                 likeView.reset();
-            break;
+                break;
             case R.id.btClip:
                 //裁剪
                 TestBean.bitmap=likeView.clip();
                 Intent intent = new Intent(this, TestActivity.class);
                 startActivity(intent);
-            break;
+                break;
         }
     }
 }
