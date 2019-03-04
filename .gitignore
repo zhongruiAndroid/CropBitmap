@@ -16,3 +16,4 @@ gradlew.bat
 .test/
 output.json
 !app.apk
+jcenter.gradle
