@@ -1,6 +1,6 @@
 | 如果有bug请用最新版本 | [ ![Download](https://api.bintray.com/packages/zhongrui/mylibrary/CropBitmap/images/download.svg) ](https://bintray.com/zhongrui/mylibrary/CropBitmap/_latestVersion) |
 |--------|----|  
-#### 版本说明
+#### 历史版本说明
 - 1.0.4 解决图片缩放+翻转之后裁剪得到的bitmap宽高过大的问题
 # 仿QQ头像裁剪  
  
