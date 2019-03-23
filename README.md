@@ -1,6 +1,6 @@
 | 如果有bug请用最新版本 | [ ![Download](https://api.bintray.com/packages/zhongrui/mylibrary/CropBitmap/images/download.svg) ](https://bintray.com/zhongrui/mylibrary/CropBitmap/_latestVersion) |
 |--------|----|  
-#### 版本说明
+#### 历史版本说明
 - 1.0.4 解决图片缩放+翻转之后裁剪得到的bitmap宽高过大的问题
 # 仿QQ头像裁剪  
  
@@ -89,23 +89,8 @@ likeView.setDoubleClickScale(1.8);
 /**获取裁剪框宽度*/
 likeView.getClipWidth();
 ```
-### 如果手机相册里面的图片出现旋转的情况
-```java
-likeView.setBitmapForWidth(filePath,1080);
 
-int degree = likeView.readPictureDegree("filePath");
 
-Bitmap oldBitmap = likeView.getBitmap();
-Bitmap rotateBitmap = likeView.rotateBitmap(degree, oldBitmap);
-
-likeView.setBitmap(rotateBitmap);
-
-/*或者使用下面4种方法,自动判断是否需要旋转图片*/
-likeView.setBitmapForHeightToRotate(filePath,height);
-likeView.setBitmapForWidthToRotate(filePath,width);
-likeView.setBitmapToRotate(filePath,width,height);
-likeView.setBitmapForScaleToRotate(filePath,4);
-```
 <br/>
 <br/>
 
