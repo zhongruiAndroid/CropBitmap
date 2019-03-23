@@ -11,8 +11,7 @@ gradle/
 gradle.properties
 *.apk
 .svn
-gradlew
-gradlew.bat
 .test/
 output.json
 !app.apk
+help.gradle
