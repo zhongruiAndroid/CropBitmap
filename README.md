@@ -86,8 +86,6 @@ likeView.setDoubleClickScale(1.8);
 /**获取裁剪框宽度*/
 likeView.getClipWidth();
 ```
-
-
 <br/>
 
 ### 如果本库对您有帮助,还希望支付宝扫一扫下面二维码,你我同时免费获取奖励金(非常感谢 Y(^-^)Y)
