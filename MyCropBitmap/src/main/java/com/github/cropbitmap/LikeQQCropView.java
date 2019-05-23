@@ -401,6 +401,7 @@ public class LikeQQCropView extends View {
 
         Bitmap newBitmap = Bitmap.createBitmap((int)getRectLength(circleRectF), (int)getRectLength(circleRectF), Bitmap.Config.ARGB_8888);
         Canvas canvas=new Canvas(newBitmap);
+        canvas.drawColor(Color.WHITE);
 
         int saveCount = canvas.saveLayer(null, null, Canvas.ALL_SAVE_FLAG);
 
