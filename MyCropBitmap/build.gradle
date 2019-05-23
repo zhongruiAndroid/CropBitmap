@@ -35,4 +35,14 @@ dependencies {
 
 
 /*---------------项目编译失败无法运行，删除以下配置---------------*/
-apply from:'jcenter.gradle'
+
+
+/***********************编译失败请注释下面代码***********************/
+def fileIsExists(String fileName){
+    def path = getRootDir().getAbsolutePath();
+    def file=new File(path+"/"+project.name+"/"+fileName);
+    return file.exists();
+}
+if (fileIsExists("help.gradle")){
+    apply from :'help.gradle'
+}
