@@ -992,10 +992,10 @@ public class LikeQQCropView extends View {
         // 创建新的图片
         Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
                 bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        if (resizedBitmap != bitmap && bitmap != null && !bitmap.isRecycled()) {
+        /*if (resizedBitmap != bitmap && bitmap != null && !bitmap.isRecycled()) {
             bitmap.recycle();
             bitmap = null;
-        }
+        }*/
         return resizedBitmap;
     }
 }

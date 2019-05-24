@@ -481,8 +481,8 @@ public class CropViewUtils {
         if(is90And270(degree)){
             Bitmap bitmap = BitmapFactory.decodeFile(pathName, options);
             Bitmap newBitmap = createBitmapForMatrix(bitmap,  1, degree);
-            bitmap.recycle();
-            bitmap=null;
+           /* bitmap.recycle();
+            bitmap=null;*/
             return newBitmap;
         }
         return BitmapFactory.decodeFile(pathName, options);
@@ -611,8 +611,8 @@ public class CropViewUtils {
 
         matrix.setRotate(degree);
         newBitmap=Bitmap.createBitmap(newBitmap,0,0,newBitmap.getWidth(),newBitmap.getHeight(),matrix,true);
-        bitmap.recycle();
-        bitmap=null;
+        /*bitmap.recycle();
+        bitmap=null;*/
         return newBitmap;
     }
     public static Bitmap scaleBitmap(Bitmap bitmap, int newWidth, int newHeight) {
@@ -709,8 +709,8 @@ public class CropViewUtils {
         matrix.postRotate(degree);
         matrix.postScale(initScale,initScale);
         Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        bitmap.recycle();
-        bitmap=null;
+        /*bitmap.recycle();
+        bitmap=null;*/
         return newBitmap;
     }
 }
