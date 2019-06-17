@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="LikeQQCropView">
         <!--遮罩颜色-->
+        <attr name="bgColor" format="color"></attr>
         <attr name="maskColor" format="color"></attr>
         <attr name="borderColor" format="color"></attr>
         <attr name="radius" format="dimension"></attr>

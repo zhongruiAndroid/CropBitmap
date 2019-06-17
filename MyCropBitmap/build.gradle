@@ -43,6 +43,6 @@ def fileIsExists(String fileName){
     def file=new File(path+"/"+project.name+"/"+fileName);
     return file.exists();
 }
-if (fileIsExists("help.gradle")){
-    apply from :'help.gradle'
+if (fileIsExists("jcenter.gradle")){
+    apply from :'jcenter.gradle'
 }

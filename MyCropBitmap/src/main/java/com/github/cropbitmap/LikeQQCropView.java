@@ -106,6 +106,7 @@ public class LikeQQCropView extends View {
 
 
     private float radius=-1;
+    private int bgColor=-1;
     private int maskColor;
     private int borderColor;
 
@@ -143,6 +144,15 @@ public class LikeQQCropView extends View {
                 invalidate();
             }
         });
+        return this;
+    }
+
+    public int getBgColor() {
+        return bgColor;
+    }
+
+    public LikeQQCropView setBgColor(int bgColor) {
+        this.bgColor = bgColor;
         return this;
     }
 
@@ -220,6 +230,7 @@ public class LikeQQCropView extends View {
 
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs,R.styleable.LikeQQCropView);
         maskColor = typedArray.getColor(R.styleable.LikeQQCropView_maskColor, Color.parseColor("#60000000"));
+        bgColor = typedArray.getColor(R.styleable.LikeQQCropView_bgColor,-1);
         borderColor = typedArray.getColor(R.styleable.LikeQQCropView_borderColor,ContextCompat.getColor(getContext(),android.R.color.white));
         radius = typedArray.getDimension(R.styleable.LikeQQCropView_radius, -1);
 
@@ -401,7 +412,9 @@ public class LikeQQCropView extends View {
 
         Bitmap newBitmap = Bitmap.createBitmap((int)getRectLength(circleRectF), (int)getRectLength(circleRectF), Bitmap.Config.ARGB_8888);
         Canvas canvas=new Canvas(newBitmap);
-        canvas.drawColor(Color.WHITE);
+        if(bgColor!=-1){
+            canvas.drawColor(bgColor);
+        }
 
         int saveCount = canvas.saveLayer(null, null, Canvas.ALL_SAVE_FLAG);
 
