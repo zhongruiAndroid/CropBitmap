@@ -50,6 +50,10 @@ likeView.setBitmapForWidth(多参);
 
 /**设置压缩的缩放倍数(偶数),图片缩小一半传2,缩小4倍传4*/
 likeView.setBitmapForScale(多参);
+
+/**setBitmap之后，千万要记得调用reset方法*/
+/*注意!注意!注意!*/
+likeView.reset();
 ```
 #### 对Bitmap的操作
 ```java
