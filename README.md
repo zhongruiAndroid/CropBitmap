@@ -1,7 +1,4 @@
-| 如果有bug请用最新版本 | [ ![Download](https://api.bintray.com/packages/zhongrui/mylibrary/CropBitmap/images/download.svg) ](https://bintray.com/zhongrui/mylibrary/CropBitmap/_latestVersion) |
-|--------|----|  
-#### 历史版本说明
-- 1.0.4 解决图片缩放+翻转之后裁剪得到的bitmap宽高过大的问题
+
 # 仿QQ头像裁剪  
  
 
@@ -53,6 +50,10 @@ likeView.setBitmapForWidth(多参);
 
 /**设置压缩的缩放倍数(偶数),图片缩小一半传2,缩小4倍传4*/
 likeView.setBitmapForScale(多参);
+
+/**setBitmap之后，千万要记得调用reset方法*/
+/*注意!注意!注意!*/
+likeView.reset();
 ```
 #### 对Bitmap的操作
 ```java
@@ -89,10 +90,11 @@ likeView.setDoubleClickScale(1.8);
 /**获取裁剪框宽度*/
 likeView.getClipWidth();
 ```
-
-
 <br/>
-<br/>
+
+### 如果本库对您有帮助,还希望支付宝扫一扫下面二维码,你我同时免费获取奖励金(非常感谢 Y(^-^)Y)
+![github](https://github.com/zhongruiAndroid/SomeImage/blob/master/image/small_ali.jpg?raw=true "github")  
+
 
 | 最新版本号 | [ ![Download](https://api.bintray.com/packages/zhongrui/mylibrary/CropBitmap/images/download.svg) ](https://bintray.com/zhongrui/mylibrary/CropBitmap/_latestVersion) |
 |--------|----|
@@ -102,4 +104,7 @@ likeView.getClipWidth();
 
 ```gradle
 implementation 'com.github:MyCropBitmap:版本号看上面'
-```
+```  
+
+#### 历史版本说明
+- 1.0.4 解决图片缩放+翻转之后裁剪得到的bitmap宽高过大的问题
