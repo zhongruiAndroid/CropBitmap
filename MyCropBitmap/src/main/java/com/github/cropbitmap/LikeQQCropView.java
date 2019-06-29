@@ -289,16 +289,16 @@ public class LikeQQCropView extends View {
     }
 
     private void init() {
-        if(showBitmap==null){
-            return;
-        }
+
         centerX = getWidth()/2;
         centerY = getHeight()/2;
         circleBorderPath=new Path();
         circlePath=new Path();
         outsidePath=new Path();
         bigCirclePath =new Path();
-
+        if(showBitmap==null){
+            return;
+        }
         if(showBitmap.getHeight()<getHeight()&&showBitmap.getWidth()<getWidth()){
             //如果图片宽高均小于屏幕宽高，只需要计算图片位移到中心的距离
             initScale=1;
@@ -812,7 +812,10 @@ public class LikeQQCropView extends View {
 /*    private void Log(String s) {
         Log.i("@@@===","==="+s);
     }*/
+    private void resetBitmap(){
 
+        reset();
+    }
     public Bitmap getBitmap() {
         return showBitmap;
     }
@@ -820,21 +823,25 @@ public class LikeQQCropView extends View {
     @Deprecated
     public LikeQQCropView setBitmap(Bitmap bitmap){
         showBitmap=bitmap;
+        resetBitmap();
         return this;
     }
     /*******************************************************************************************************/
     public LikeQQCropView setBitmap(int resId, int reqWidth, int reqHeight) {
         showBitmap= CropViewUtils.compressBitmap(getContext(),resId,reqWidth,reqHeight);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmap(String pathName, int reqWidth, int reqHeight) {
         showBitmap= CropViewUtils.compressBitmap(pathName,reqWidth,reqHeight);
+        resetBitmap();
         return this;
     }
     @Deprecated
     public LikeQQCropView setBitmapToRotate(String pathName, int reqWidth, int reqHeight) {
         //内部已做旋转处理
         showBitmap= CropViewUtils.compressBitmap(pathName,reqWidth,reqHeight);
+        resetBitmap();
 //        int degree = CropViewUtils.readPictureDegree(pathName);
 //        if(degree>0){
 //            showBitmap=rotateBitmap(degree,showBitmap);
@@ -843,18 +850,22 @@ public class LikeQQCropView extends View {
     }
     public LikeQQCropView setBitmap(byte[] data, int offset, int length, int reqWidth, int reqHeight) {
         showBitmap= CropViewUtils.compressBitmap(data,offset,length,reqWidth,reqHeight);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmap(FileDescriptor fd, Rect outPadding, int reqWidth, int reqHeight) {
         showBitmap= CropViewUtils.compressBitmap(fd,outPadding,reqWidth,reqHeight);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmap(Resources res, TypedValue value, InputStream is, Rect pad, int reqWidth, int reqHeight) {
         showBitmap= CropViewUtils.compressBitmap(res,value,is,pad,reqWidth,reqHeight);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmap(InputStream is, Rect outPadding, int reqWidth, int reqHeight) {
         showBitmap= CropViewUtils.compressBitmap(is,outPadding,reqWidth,reqHeight);
+        resetBitmap();
         return this;
     }
     /*******************************************************************************************************/
@@ -863,16 +874,19 @@ public class LikeQQCropView extends View {
     /*******************************************************************************************************/
     public LikeQQCropView setBitmapForHeight(int resId,int reqHeight) {
         showBitmap= CropViewUtils.compressBitmapForHeight(getContext(),resId,reqHeight);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmapForHeight(String pathName,int reqHeight) {
         showBitmap= CropViewUtils.compressBitmapForHeight(pathName,reqHeight);
+        resetBitmap();
         return this;
     }
     @Deprecated
     public LikeQQCropView setBitmapForHeightToRotate(String pathName,int reqHeight) {
         //内部已做旋转处理
         showBitmap= CropViewUtils.compressBitmapForHeight(pathName,reqHeight);
+        resetBitmap();
 //        int degree = CropViewUtils.readPictureDegree(pathName);
 //        if(degree>0){
 //            showBitmap=rotateBitmap(degree,showBitmap);
@@ -881,18 +895,22 @@ public class LikeQQCropView extends View {
     }
     public LikeQQCropView setBitmapForHeight(byte[] data, int offset, int length,int reqHeight) {
         showBitmap= CropViewUtils.compressBitmapForHeight(data,offset,length,reqHeight);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmapForHeight(FileDescriptor fd, Rect outPadding,int reqHeight) {
         showBitmap= CropViewUtils.compressBitmapForHeight(fd,outPadding,reqHeight);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmapForHeight(Resources res, TypedValue value,InputStream is, Rect pad,int reqHeight) {
         showBitmap= CropViewUtils.compressBitmapForHeight(res,value,is,pad,reqHeight);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmapForHeight(InputStream is, Rect outPadding,int reqHeight) {
         showBitmap= CropViewUtils.compressBitmapForHeight(is,outPadding,reqHeight);
+        resetBitmap();
         return this;
     }
     /*******************************************************************************************************/
@@ -901,16 +919,19 @@ public class LikeQQCropView extends View {
     /*******************************************************************************************************/
     public LikeQQCropView setBitmapForWidth( int resId, int reqWidth) {
         showBitmap= CropViewUtils.compressBitmapForWidth(getContext(),resId,reqWidth);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmapForWidth(String pathName, int reqWidth) {
         showBitmap= CropViewUtils.compressBitmapForWidth(pathName,reqWidth);
+        resetBitmap();
         return this;
     }
     @Deprecated
     public LikeQQCropView setBitmapForWidthToRotate(String pathName,int reqWidth) {
         //内部已做旋转处理
         showBitmap= CropViewUtils.compressBitmapForWidth(pathName,reqWidth);
+        resetBitmap();
 //        int degree = CropViewUtils.readPictureDegree(pathName);
 //        if(degree>0){
 //            showBitmap=rotateBitmap(degree,showBitmap);
@@ -919,18 +940,22 @@ public class LikeQQCropView extends View {
     }
     public LikeQQCropView setBitmapForWidth(byte[] data, int offset, int length, int reqWidth) {
         showBitmap= CropViewUtils.compressBitmapForWidth(data,offset,length,reqWidth);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmapForWidth(FileDescriptor fd, Rect outPadding, int reqWidth) {
         showBitmap= CropViewUtils.compressBitmapForWidth(fd,outPadding,reqWidth);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmapForWidth(Resources res, TypedValue value,InputStream is, Rect pad, int reqWidth) {
         showBitmap= CropViewUtils.compressBitmapForWidth(res,value,is,pad,reqWidth);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmapForWidth(InputStream is, Rect outPadding, int reqWidth) {
         showBitmap= CropViewUtils.compressBitmapForWidth(is,outPadding,reqWidth);
+        resetBitmap();
         return this;
     }
     /*******************************************************************************************************/
@@ -939,16 +964,19 @@ public class LikeQQCropView extends View {
     /*******************************************************************************************************/
     public LikeQQCropView setBitmapForScale(int resId,int scaleSize) {
         showBitmap= CropViewUtils.compressBitmapForScale(getContext(),resId,scaleSize);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmapForScale(String pathName,int scaleSize) {
         showBitmap= CropViewUtils.compressBitmapForScale(pathName,scaleSize);
+        resetBitmap();
         return this;
     }
     @Deprecated
     public LikeQQCropView setBitmapForScaleToRotate(String pathName,int scaleSize) {
         //内部已做旋转处理
         showBitmap= CropViewUtils.compressBitmapForScale(pathName,scaleSize);
+        resetBitmap();
 //        int degree = CropViewUtils.readPictureDegree(pathName);
 //        if(degree>0){
 //            showBitmap=rotateBitmap(degree,showBitmap);
@@ -957,18 +985,22 @@ public class LikeQQCropView extends View {
     }
     public LikeQQCropView setBitmapForScale(byte[] data, int offset, int length,int scaleSize) {
         showBitmap= CropViewUtils.compressBitmapForScale(data,offset,length,scaleSize);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmapForScale(FileDescriptor fd, Rect outPadding,int scaleSize) {
         showBitmap= CropViewUtils.compressBitmapForScale(fd,outPadding,scaleSize);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmapForScale(Resources res, TypedValue value,InputStream is, Rect pad,int scaleSize) {
         showBitmap= CropViewUtils.compressBitmapForScale(res,value,is,pad,scaleSize);
+        resetBitmap();
         return this;
     }
     public LikeQQCropView setBitmapForScale(InputStream is, Rect outPadding,int scaleSize) {
         showBitmap= CropViewUtils.compressBitmapForScale(is,outPadding,scaleSize);
+        resetBitmap();
         return this;
     }
     /*******************************************************************************************************/
