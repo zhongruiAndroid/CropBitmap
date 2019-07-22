@@ -391,7 +391,7 @@ public class LikeQQCropView extends View {
         bigCirclePath.op(circlePath,Path.Op.XOR);
 
         //获取可以触摸放大的区域
-        touchRegion.setPath(bigCirclePath,new Region(0,0,getWidth(),getHeight()));
+//        touchRegion.setPath(bigCirclePath,new Region(0,0,getWidth(),getHeight()));
     }
 
     /*裁剪*/
