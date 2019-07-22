@@ -137,13 +137,10 @@ public class LikeQQCropView extends View {
 
     public LikeQQCropView setMaskColor(@ColorInt int maskColor) {
         this.maskColor = maskColor;
-        post(new Runnable() {
-            @Override
-            public void run() {
-                refreshPaint();
-                invalidate();
-            }
-        });
+        if(sizeChanged){
+            refreshPaint();
+            invalidate();
+        }
         return this;
     }
 
@@ -162,13 +159,11 @@ public class LikeQQCropView extends View {
 
     public LikeQQCropView setBorderColor(@ColorInt int borderColor) {
         this.borderColor = borderColor;
-        post(new Runnable() {
-            @Override
-            public void run() {
-                refreshPaint();
-                invalidate();
-            }
-        });
+        if(sizeChanged){
+            refreshPaint();
+            invalidate();
+        }
+
         return this;
     }
 
@@ -252,7 +247,7 @@ public class LikeQQCropView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 //        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
+        sizeChanged=false;
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         int width=getScreenWidth()/2;
@@ -498,8 +493,18 @@ public class LikeQQCropView extends View {
     }
     /*还原*/
     public void reset(){
-        init();
-        invalidate();
+        if(sizeChanged){
+            init();
+            invalidate();
+        }else{
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    init();
+                    invalidate();
+                }
+            });
+        }
     }
     private float getPathInterval(){
         return dip2px(getContext(),0.5f);
